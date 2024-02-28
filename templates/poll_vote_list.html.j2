@@ -19,7 +19,7 @@
         {% if choice.votes | length != 0 %}
         Voted by: {% for vote in choice.votes %}{{ vote.voter_name }}{% if not loop.last %}, {% endif %}{% endfor %}
         {% endif %}
-      <div>
+      </div>
     </label>
   </div>
   <p></p>
