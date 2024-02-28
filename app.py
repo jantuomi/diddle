@@ -2,11 +2,17 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import datetime
+import sys
+import os
+import traceback
 from dataclasses import dataclass
 from flask import Flask, render_template, redirect, request, make_response
 app = Flask(__name__)
 
 import db
+import email_client
+
+BASE_URL = os.environ["BASE_URL"]
 
 @dataclass
 class ChoicesByVoter:
@@ -65,6 +71,9 @@ def create():
     form["author_email"],
     choices,
   )
+
+  email_client.send_poll_created_email_if_enabled(poll_id=poll.id)
+
   resp = make_response(
     redirect(f"/manage/{poll.manage_code}")
   )
@@ -122,6 +131,8 @@ def vote_poll(id):
       choice_ids.append(choice_id)
 
   db.vote_poll(id, voter_name, choice_ids)
+
+  email_client.send_participation_email_if_enabled(poll_id=id, voter_name=voter_name)
 
   return redirect(f"/poll/{id}")
 

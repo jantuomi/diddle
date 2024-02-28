@@ -32,6 +32,14 @@ You can also run the app without containerization:
 | DB_PORT | Postgres port (default: 5432) |
 | DB_DATABASE | Postgres database (default: postgres) |
 | DB_USER | Postgres user (default: postgres) |
+| EMAIL_HOST | SMTP host address |
+| EMAIL_PORT | SMTP port |
+| EMAIL_HOST_USER | SMTP host user |
+| EMAIL_HOST_PASSWORD | SMTP host password |
+| EMAIL_USE_TLS | Use TLS with SMTP? |
+| EMAIL_MESSAGE_FROM | Email message from header |
+
+`EMAIL_` variables are only required if at least one of them is defined.
 
 ## Screenshots
 
