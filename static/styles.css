@@ -1,0 +1,133 @@
+html {
+  font-family: "Helvetica Neue", "Arial", sans-serif;
+  font-size: 16px;
+}
+
+body {
+  padding: 10px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+button,
+input[type="submit"] {
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+  text-shadow: none;
+  box-shadow: none;
+  padding: 5px 8px;
+  border: 0;
+  background-color: rgb(63, 122, 248);
+  color: white;
+}
+
+button.red,
+input[type="submit"].red {
+  background-color: #d42f2f;
+}
+
+button.green,
+input[type="submit"].green {
+  background-color: #4caf50;
+}
+
+button.yellow,
+input[type="submit"].yellow {
+  background-color: #ff9800;
+}
+
+input[type="text"],
+input[type="datetime-local"] {
+  font-size: 16px;
+  color: black;
+}
+
+input[type="text"]:disabled,
+input[type="datetime-local"]:disabled {
+  color: #666;
+}
+
+.contrast {
+  color: #fa8e35;
+}
+
+th, td {
+  padding-left: 0;
+  padding-right: 5px;
+  min-width: 100px;
+}
+
+table {
+  margin-left: -2px;
+}
+
+.vote-table th,
+.vote-table td {
+  text-align: center;
+  padding: 7px 5px;
+}
+
+.vote-table th span {
+  display: block;
+}
+
+.vote-table th span i {
+  font-weight: normal;
+}
+
+.vote-table td:first-child {
+  text-align: left;
+  padding-left: 5px;
+}
+
+.vote-table tr:last-child td:first-child {
+  padding-left: 0;
+}
+
+.vote-table tr td:nth-child(even),
+.vote-table tr th:nth-child(even) {
+  background-color: #f2f2f2; /* Light grey background */
+}
+
+.vote-table tr:nth-child(even),
+.vote-table tr:nth-child(even) {
+  background-color: #f8f6ff; /* Light grey background */
+}
+
+.danger-zone {
+  margin-top: 40px;
+}
+
+.manage-table th {
+  text-align: left;
+}
+
+.poll-form td:last-child,
+.manage-table td:last-child {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+}
+
+.poll-form td:last-child > *,
+.manage-table td:last-child > * {
+  flex: 1;
+}
+
+.manage-table td:last-child input[type="submit"] {
+  max-width: 70px;
+}
+
+.display-mode-section {
+  margin-bottom: 30px;
+}
+
+.display-mode-section input[type="submit"] {
+  margin-left: 10px;
+}
+
+.vote-list label,
+input[type="checkbox"] {
+  cursor: pointer;
+}

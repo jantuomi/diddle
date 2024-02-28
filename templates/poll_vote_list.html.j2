@@ -1,0 +1,34 @@
+<div class="vote-list">
+  {% for choice in choices %}
+  <div>
+    <label for="choice_{{ choice.id }}">
+      <input type="checkbox" name="choice_{{ choice.id }}" id="choice_{{ choice.id }}">
+      <strong>
+        {{ choice.start_datetime.strftime("%a %d.%m") }}
+        <span>
+          {% if now.year != choice.start_datetime.year %}.{{choice.start_datetime.year}}{% endif %}
+        </span>
+        <span>
+          {{ choice.start_datetime.strftime("%H:%M") }} &ndash; {{ choice.end_datetime.strftime("%H:%M") }}
+        </span>
+      </strong>
+      <span>
+        <i>{{ choice.votes | length }} votes</i>
+      </span>
+      <div>
+        {% if choice.votes | length != 0 %}
+        Voted by: {% for vote in choice.votes %}{{ vote.voter_name }}{% if not loop.last %}, {% endif %}{% endfor %}
+        {% endif %}
+      <div>
+    </label>
+  </div>
+  <p></p>
+  {% endfor %}
+</div>
+
+<div>
+  <label for="voter_name" hidden>Your name</label>
+  <input type="text" name="voter_name" placeholder="Your name" required>
+  <input class="green" type="submit" value="Submit">
+</div>
+

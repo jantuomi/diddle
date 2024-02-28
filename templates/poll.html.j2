@@ -1,0 +1,34 @@
+{% extends "base.html.j2" %}
+
+{% block content %}
+
+<h2><span class="contrast">{{ poll.title }}</span> by <i>{{ poll.author_name }}</i></h2>
+{% if poll.description %}
+  <p>{{ poll.description }}</p>
+{% endif %}
+
+{% if poll.choices | length  == 0 %}
+<p>No options available.</p>
+{% else %}
+
+<div class="display-mode-section">
+  <form action="/options/toggle_display_mode" method="post">
+    <input type="hidden" name="poll_id" value="{{ poll.id }}">
+    <label>
+      Display mode: <strong>{{ display_mode }}</strong>
+      <input type="submit" value="Toggle">
+    </label>
+  </form>
+</div>
+
+<form action="/poll/{{ poll.id }}/vote" method="post">
+  {% if display_mode == "table" %}
+  {% include "poll_vote_table.html.j2" %}
+  {% else %}
+  {% include "poll_vote_list.html.j2" %}
+  {% endif %}
+</form>
+{% endif %}
+
+
+{% endblock %}

@@ -1,0 +1,51 @@
+<table class="vote-table">
+  <tr>
+    <th></th>
+    {% for choice in choices %}
+    <th>
+      {{ choice.start_datetime.strftime("%a %d.%m") }}
+      <span>
+        {% if now.year != choice.start_datetime.year %}.{{choice.start_datetime.year}}{% endif %}
+      </span>
+      <span>
+        {{ choice.start_datetime.strftime("%H:%M") }} &ndash; {{ choice.end_datetime.strftime("%H:%M") }}
+      </span>
+      <span>
+        <i>{{ choice.votes | length }} votes</i>
+      </span>
+    </th>
+    {% endfor %}
+  </tr>
+  {% for voter in choices_by_voter %}
+  <tr>
+    <td>{{ voter.name }}</td>
+    {% for voted in voter.votes %}
+    {% if voted %}
+    <td>
+      <input type="checkbox" checked disabled>
+    </td>
+    {% else %}
+    <td>
+      <input type="checkbox" disabled>
+    </td>
+    {% endif %}
+    {% endfor %}
+  </tr>
+  {% endfor %}
+
+  <!-- Add a row for the current user -->
+  <tr>
+    <td>
+      <label for="voter_name" hidden>Your name</label>
+      <input type="text" name="voter_name" placeholder="Your name" required>
+    </td>
+    {% for choice in choices %}
+    <td>
+      <input type="checkbox" name="choice_{{ choice.id }}">
+    </td>
+    {% endfor %}
+  </tr>
+  <!-- End of the row for the current user -->
+</table>
+
+<input class="green" type="submit" value="Submit">

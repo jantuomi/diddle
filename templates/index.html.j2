@@ -1,0 +1,40 @@
+{% extends "base.html.j2" %}
+
+{% block content %}
+<h2>Create new diddle</h2>
+<form class="poll-form" action="/poll/create" method="post">
+  <table>
+    <tbody>
+      <tr>
+        <td><label for="title">Title</label></td>
+        <td><input type="text" name="title" required></td>
+      </tr>
+      <tr>
+        <td><label for="description">Description (optional)</label></td>
+        <td><textarea name="description"></textarea></td>
+      </tr>
+      <tr>
+        <td><label for="author_name">Your name</label></td>
+        <td><input type="text" name="author_name" required></td>
+      </tr>
+      <tr>
+        <td><label for="author_email">Your email (optional)</label></td>
+        <td><input type="text" name="author_email"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>You can add options after submitting.</p>
+  <input class="green" type="submit" value="Create">
+</form>
+
+{% if created_polls | length != 0 %}
+<h3>My diddles</h3>
+<ul>
+  {% for poll in created_polls %}
+  <li><a href="/manage/{{ poll.manage_code }}">{{ poll.title }}</a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}

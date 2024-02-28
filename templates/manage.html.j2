@@ -1,0 +1,119 @@
+{% extends "base.html.j2" %}
+
+{% block content %}
+
+<h2>Managing poll <span class="contrast">{{ poll.title }}</span> by <i>{{ poll.author_name }}</i></h2>
+
+<p>
+  Share this URL with your peers:<br>
+  <a href="{{ poll.share_url() }}">{{ poll.share_url() }}</a>
+</p>
+<p>
+  <strong>Note!</strong> You can only edit this poll if you have this URL or use the same browser session:<br>
+  <a href="{{ poll.manage_url() }}">{{ poll.manage_url() }}</a>
+</p>
+
+<form class="poll-form" action="/manage/{{ poll.manage_code }}/update_info" method="post">
+  <table>
+    <tbody>
+      <tr>
+        <td><label for="title">Title</label></td>
+        <td><input type="text" name="title" value="{{ poll.title }}" required></td>
+      </tr>
+      <tr>
+        <td><label for="description">Description (optional)</label></td>
+        <td><textarea name="description" value="{{ poll.description }}"></textarea></td>
+      </tr>
+      <tr>
+        <td><label for="author_name">Your name</label></td>
+        <td><input type="text" name="author_name" value="{{ poll.author_name }}" required></td>
+      </tr>
+      <tr>
+        <td><label for="author_email">Your email (optional)</label></td>
+        <td><input type="text" name="author_email" value="{{ poll.author_email }}"></td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <input type="submit" value="Update">
+</form>
+
+<div>
+  <h3>Options</h3>
+</div>
+
+<table class="manage-table">
+  <thead>
+    <tr>
+      <th>Start time</th>
+      <th>End time</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for choice in poll.choices %}
+    <form action="/manage/{{ poll.manage_code }}/delete_choice/{{ choice.id }}" method="post">
+      <tr>
+        <td>
+          <input type="datetime-local" name="start_datetime_{{ choice.id }}" value="{{ choice.start_datetime_notz() }}" disabled
+                 {% if last_choice_id == choice.id %}id="last-start-datetime"{% endif %}>
+        </td>
+        <td>
+          <input type="datetime-local" name="end_datetime_{{ choice.id }}" value="{{ choice.end_datetime_notz() }}" disabled
+                 {% if last_choice_id == choice.id %}id="last-end-datetime"{% endif %}>
+        </td>
+        <td>
+          <input class="red" type="submit" value="Delete">
+        </td>
+      </tr>
+    </form>
+    {% endfor %}
+    <form action="/manage/{{ poll.manage_code }}/add_choice" method="post">
+      <tr>
+        <td>
+          <input type="datetime-local" name="start_datetime" required>
+        </td>
+        <td>
+          <input type="datetime-local" name="end_datetime" required>
+        </td>
+        <td>
+          <input class="green" type="submit" value="Add">
+        </td>
+      </tr>
+    </form>
+  </tbody>
+</table>
+
+<div class="danger-zone">
+  <h3>Danger zone</h3>
+  <form action="/manage/{{ poll.manage_code }}/delete" method="post">
+    <!-- Empty forms make Lynx use HTTP method GET incorrectly, so we add a useless field -->
+    <input type="hidden" name="poll_id" value="{{ poll.id }}">
+    <input class="red" type="submit" value="Delete poll">
+  </form>
+</div>
+
+<script>
+const hour = 1000 * 60 * 60;
+
+const startDatetimeInput = document.querySelector('input[name="start_datetime"]');
+const endDatetimeInput = document.querySelector('input[name="end_datetime"]');
+
+const lastStartDatetimeInput = document.getElementById('last-start-datetime');
+const lastEndDatetimeInput = document.getElementById('last-end-datetime');
+
+if (lastStartDatetimeInput !== null && startDatetimeInput.valueAsDate === null) {
+  startDatetimeInput.valueAsDate = new Date(lastStartDatetimeInput.valueAsDate.getTime() + hour);
+}
+
+startDatetimeInput.addEventListener('blur', onStartDatetimeBlur);
+
+function onStartDatetimeBlur(event) {
+  const endDatetimeInput = document.querySelector('input[name="end_datetime"]');
+  if (endDatetimeInput.valueAsDate === null) {
+    endDatetimeInput.valueAsDate = new Date(event.target.valueAsDate.getTime() + hour);
+  }
+}
+</script>
+
+{% endblock %}

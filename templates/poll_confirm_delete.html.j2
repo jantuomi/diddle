@@ -1,0 +1,13 @@
+{% extends "base.html.j2" %}
+
+{% block content %}
+<h2>Confirm deletion of <span class="contrast">{{ poll.title }}</span></h2>
+
+<p>Are you sure you want to delete {{ poll.title }}?</p>
+
+<form action="/manage/{{ poll.manage_code }}/confirm_delete" method="post">
+  <!-- Empty forms make Lynx use HTTP method GET incorrectly, so we add a useless field -->
+  <input type="hidden" name="poll_id" value="{{ poll.id }}">
+  <input class="red" type="submit" value="Yes, delete it">
+</form>
+{% endblock %}
