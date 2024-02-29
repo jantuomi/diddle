@@ -70,6 +70,9 @@ class Choice:
   def end_datetime_notz(self):
     return self.end_datetime.replace(tzinfo=None)
 
+  def ends_on_same_day(self):
+    return self.start_datetime.date() == self.end_datetime.date()
+
 @dataclass
 class Poll:
   id: str

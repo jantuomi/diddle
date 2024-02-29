@@ -9,7 +9,20 @@
           {% if now.year != choice.start_datetime.year %}.{{choice.start_datetime.year}}{% endif %}
         </span>
         <span>
-          {{ choice.start_datetime.strftime("%H:%M") }} &ndash; {{ choice.end_datetime.strftime("%H:%M") }}
+          {{ choice.start_datetime.strftime("%H:%M") }}
+        </span>
+        <span>&mdash;</span>
+        {% if not choice.ends_on_same_day() %}
+        <span>
+          {{ choice.end_datetime.strftime("%a %d.%m") }}
+        </span>
+        <span>
+          {% if now.year != choice.end_datetime.year %}.{{choice.end_datetime.year}}{% endif %}
+        </span>
+        {% endif %}
+        <span>
+        {{ choice.end_datetime.strftime("%H:%M") }}
+        </span>
         </span>
       </strong>
       <span>
