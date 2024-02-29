@@ -10,8 +10,10 @@
         <i>{{ choice.votes | length }} votes</i>
       </span>
       <div>
-        {% if choice.votes | length != 0 %}
-        Voted by: {% for vote in choice.votes %}{{ vote.voter_name }}{% if not loop.last %}, {% endif %}{% endfor %}
+        {% if choice.votes_with_value(1) | length != 0 %}
+        Voted by: {% for vote in choice.votes_with_value(1) %}
+        {{ vote.voter_name }}{% if not loop.last %}, {% endif %}
+        {% endfor %}
         {% endif %}
       </div>
     </label>

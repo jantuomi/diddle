@@ -1,5 +1,5 @@
 html {
-  font-family: "Helvetica Neue", "Arial", sans-serif;
+  font-family: "Verdana", "Arial", sans-serif !important;
   font-size: 16px;
 }
 
@@ -9,8 +9,22 @@ body {
   margin: 0 auto;
 }
 
+h1 {
+  margin-bottom: 40px;
+}
+
+h1 a {
+  color: black;
+  text-decoration: none;
+}
+
+h1:hover a {
+  border-bottom: 2px dotted #fa8e35;
+  text-decoration: none;
+}
+
 textarea {
-  font-family: "Helvetica Neue", "Arial", sans-serif;
+  font-family: "Verdana", "Arial", sans-serif;
   font-size: 16px;
 }
 

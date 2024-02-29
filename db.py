@@ -83,6 +83,9 @@ class Choice:
     return self.start_datetime.date() == self.end_datetime.date() \
        and self.start_datetime.time() == self.end_datetime.time()
 
+  def votes_with_value(self, value: int) -> list[Vote]:
+    return [vote for vote in self.votes if vote.value == value]
+
 @dataclass
 class Poll:
   id: str
@@ -94,6 +97,11 @@ class Poll:
   choices: list[Choice]
   manage_code: str
   is_whole_day: bool
+
+  def pub_date_formatted_notz(self):
+    date = self.pub_date.replace(tzinfo = None).strftime("%d.%m.%Y")
+    time = self.pub_date.replace(tzinfo = None).strftime("%H:%M")
+    return f"Created on {date} at {time}"
 
   def share_url(self):
     return f"{BASE_URL}/poll/{self.id}"

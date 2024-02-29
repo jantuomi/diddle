@@ -3,6 +3,7 @@
 {% block content %}
 
 <h2>Managing poll <span class="contrast">{{ poll.title }}</span> by <i>{{ poll.author_name }}</i></h2>
+<p>{{ poll.pub_date_formatted_notz() }}.</p>
 
 <p>
   Share this URL with your peers:<br>
