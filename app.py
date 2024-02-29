@@ -2,9 +2,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import datetime
-import sys
 import os
-import traceback
+from user_agents import parse as parse_user_agent
 from dataclasses import dataclass
 from flask import Flask, render_template, redirect, request, make_response
 from flask_compress import Compress
@@ -91,7 +90,15 @@ def poll(id):
   if poll is None:
     return "Poll not found", 404
 
-  display_mode = request.cookies.get("diddle_display_mode", "table")
+  display_mode_cookie = request.cookies.get("diddle_display_mode")
+  if display_mode_cookie is None:
+    user_agent = parse_user_agent(request.user_agent.string)
+    if user_agent.is_mobile or user_agent.is_tablet:
+      display_mode = "list"
+    else:
+      display_mode = "table"
+  else:
+    display_mode = display_mode_cookie
 
   voter_names_set: set[str] = set()
   selections: dict[VoterNameChoiceIdPair, int] = {}
@@ -103,14 +110,18 @@ def poll(id):
   voter_names = list(voter_names_set)
   voter_names.sort()
 
-  return render_template('poll.html.j2',
-                         poll=poll,
-                         selections=selections,
-                         choices=poll.choices,
-                         voter_names=voter_names,
-                         now=datetime.datetime.now(),
-                         display_mode=display_mode,
-  )
+  resp = make_response(
+    render_template("poll.html.j2",
+                    poll=poll,
+                    selections=selections,
+                    choices=poll.choices,
+                    voter_names=voter_names,
+                    now=datetime.datetime.now(),
+                    display_mode=display_mode))
+
+  resp.set_cookie("diddle_display_mode", display_mode)
+  return resp
+
 
 @app.post("/poll/<id>/vote")
 def vote_poll(id):
