@@ -3,26 +3,7 @@
 {% block content %}
 <h2>Create new diddle</h2>
 <form class="poll-form" action="/poll/create" method="post">
-  <table>
-    <tbody>
-      <tr>
-        <td><label for="title">Title</label></td>
-        <td><input type="text" name="title" required></td>
-      </tr>
-      <tr>
-        <td><label for="description">Description (optional)</label></td>
-        <td><textarea name="description"></textarea></td>
-      </tr>
-      <tr>
-        <td><label for="author_name">Your name</label></td>
-        <td><input type="text" name="author_name" required></td>
-      </tr>
-      <tr>
-        <td><label for="author_email">Your email (optional)</label></td>
-        <td><input type="text" name="author_email"></td>
-      </tr>
-    </tbody>
-  </table>
+  {% include "poll_info_table.html.j2" %}
 
   <p>You can add options after submitting.</p>
   <input class="green" type="submit" value="Create">

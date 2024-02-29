@@ -43,13 +43,13 @@ input[type="submit"].yellow {
 }
 
 input[type="text"],
-input[type="datetime-local"] {
+input[type*="date"] {
   font-size: 16px;
   color: black;
 }
 
 input[type="text"]:disabled,
-input[type="datetime-local"]:disabled {
+input[type*="date"]:disabled {
   color: #666;
 }
 
@@ -71,6 +71,10 @@ table {
 .vote-table td {
   text-align: center;
   padding: 7px 5px;
+}
+
+.vote-table th {
+  vertical-align: bottom;
 }
 
 .vote-table th span {
@@ -139,4 +143,13 @@ input[type="checkbox"] {
 
 input[type="checkbox"]:disabled {
   cursor: initial;
+}
+
+td.checkbox-field {
+  text-align: left;
+}
+
+td.checkbox-field input[type="checkbox"] {
+  flex: initial;
+  margin-left: 0;
 }

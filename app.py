@@ -37,7 +37,7 @@ def validation_error(message: str):
   return render_template("error.html.j2", error=message), 400
 
 @app.route("/")
-def hello_world():
+def index():
   created_poll_codes = []
   for k, _ in request.cookies.items():
     if k.startswith("diddle_manage_code_"):
@@ -71,6 +71,7 @@ def create():
     form["description"],
     form["author_name"],
     form["author_email"],
+    "is_whole_day" in form,
     choices,
   )
 
@@ -177,6 +178,7 @@ def update_poll_info(code):
     form["description"],
     form["author_name"],
     form["author_email"],
+    "is_whole_day" in form,
   )
 
   return redirect(f"/manage/{code}")
@@ -188,16 +190,24 @@ def add_choice(code):
     return validation_error("Start datetime is required")
   if "end_datetime" not in form or len(form["end_datetime"]) == 0:
     return validation_error("End datetime is required")
-  if form["start_datetime"] >= form["end_datetime"]:
+  if form["start_datetime"] > form["end_datetime"]:
     return validation_error("Start datetime must be before end datetime")
+
+  start_datetime = form["start_datetime"]
+  if len(start_datetime) == 10:
+    start_datetime += "T00:00"
+
+  end_datetime = form["end_datetime"]
+  if len(end_datetime) == 10:
+    end_datetime += "T23:59"
 
   db.add_choice_to_poll(
     code,
-    form["start_datetime"],
-    form["end_datetime"],
+    start_datetime,
+    end_datetime,
   )
 
-  return redirect(f"/manage/{code}")
+  return redirect(f"/manage/{code}?focus_next=1")
 
 @app.post("/manage/<code>/delete_choice/<choice_id>")
 def delete_choice(code, choice_id):
@@ -207,7 +217,7 @@ def delete_choice(code, choice_id):
 
   db.delete_choice(choice_id)
 
-  return redirect(f"/manage/{code}")
+  return redirect(f"/manage/{code}?focus_next=1")
 
 @app.get("/manage/<code>")
 def manage(code):

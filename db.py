@@ -70,8 +70,18 @@ class Choice:
   def end_datetime_notz(self):
     return self.end_datetime.replace(tzinfo=None)
 
+  def start_date_notz(self):
+    return self.start_datetime.date()
+
+  def end_date_notz(self):
+    return self.end_datetime.date()
+
   def ends_on_same_day(self):
     return self.start_datetime.date() == self.end_datetime.date()
+
+  def ends_at_same_datetime(self):
+    return self.start_datetime.date() == self.end_datetime.date() \
+       and self.start_datetime.time() == self.end_datetime.time()
 
 @dataclass
 class Poll:
@@ -83,6 +93,7 @@ class Poll:
   author_email: str | None
   choices: list[Choice]
   manage_code: str
+  is_whole_day: bool
 
   def share_url(self):
     return f"{BASE_URL}/poll/{self.id}"
@@ -99,6 +110,7 @@ def tuple_to_poll(poll_t: tuple) -> Poll:
     author_name=poll_t[4],
     author_email=poll_t[5],
     manage_code=poll_t[6],
+    is_whole_day=poll_t[7],
     choices=[]
   )
 
@@ -159,13 +171,14 @@ def create_poll(title: str,
                 description: str,
                 author_name: str,
                 author_email: str,
+                is_whole_day: bool,
                 choices: list[Choice]):
 
   with db.cursor() as (conn, cur):
     try:
-      cur.execute("INSERT INTO polls (title, description, author_name, author_email)"
-                  "VALUES (%s, %s, %s, %s) RETURNING *",
-                  (title, description, author_name, author_email))
+      cur.execute("INSERT INTO polls (title, description, author_name, author_email, whole_day)"
+                  "VALUES (%s, %s, %s, %s, %s) RETURNING *",
+                  (title, description, author_name, author_email, is_whole_day))
       poll_t = cur.fetchone()
 
       if poll_t is None:
@@ -228,12 +241,13 @@ def update_poll_info(
     description,
     author_name,
     author_email,
+    is_whole_day,
   ) -> None:
   with db.cursor() as (conn, cur):
     try:
-      cur.execute("UPDATE polls SET title = %s, description = %s, author_name = %s, author_email = %s "
+      cur.execute("UPDATE polls SET title = %s, description = %s, author_name = %s, author_email = %s, whole_day = %s "
                   "WHERE manage_code = %s",
-                  (title, description, author_name, author_email, code))
+                  (title, description, author_name, author_email, is_whole_day, code))
       conn.commit()
     except Exception as e:
       conn.rollback()

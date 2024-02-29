@@ -14,27 +14,8 @@
 </p>
 
 <form class="poll-form" action="/manage/{{ poll.manage_code }}/update_info" method="post">
-  <table>
-    <tbody>
-      <tr>
-        <td><label for="title">Title</label></td>
-        <td><input type="text" name="title" value="{{ poll.title }}" required></td>
-      </tr>
-      <tr>
-        <td><label for="description">Description (optional)</label></td>
-        <td><textarea name="description">{{ poll.description }}</textarea></td>
-      </tr>
-      <tr>
-        <td><label for="author_name">Your name</label></td>
-        <td><input type="text" name="author_name" value="{{ poll.author_name }}" required></td>
-      </tr>
-      <tr>
-        <td><label for="author_email">Your email (optional)</label></td>
-        <td><input type="text" name="author_email" value="{{ poll.author_email }}"></td>
-      </tr>
-    </tbody>
-  </table>
-  <br>
+  {% include "poll_info_table.html.j2" %}
+  <p></p>
   <input type="submit" value="Update">
 </form>
 
@@ -55,11 +36,17 @@
     <form action="/manage/{{ poll.manage_code }}/delete_choice/{{ choice.id }}" method="post">
       <tr>
         <td>
-          <input type="datetime-local" name="start_datetime_{{ choice.id }}" value="{{ choice.start_datetime_notz() }}" disabled
+          <input type="{% if poll.is_whole_day %}date{% else %}datetime-local{% endif %}"
+                 name="start_datetime_{{ choice.id }}"
+                 value="{% if poll.is_whole_day %}{{ choice.start_date_notz() }}{% else %}{{ choice.start_datetime_notz() }}{% endif %}"
+                 disabled
                  {% if last_choice_id == choice.id %}id="last-start-datetime"{% endif %}>
         </td>
         <td>
-          <input type="datetime-local" name="end_datetime_{{ choice.id }}" value="{{ choice.end_datetime_notz() }}" disabled
+          <input type="{% if poll.is_whole_day %}date{% else %}datetime-local{% endif %}"
+                 name="end_datetime_{{ choice.id }}"
+                 value="{% if poll.is_whole_day %}{{ choice.end_date_notz() }}{% else %}{{ choice.end_datetime_notz() }}{% endif %}"
+                 disabled
                  {% if last_choice_id == choice.id %}id="last-end-datetime"{% endif %}>
         </td>
         <td>
@@ -71,10 +58,10 @@
     <form action="/manage/{{ poll.manage_code }}/add_choice" method="post">
       <tr>
         <td>
-          <input type="datetime-local" name="start_datetime" required>
+          <input type="{% if poll.is_whole_day %}date{% else %}datetime-local{% endif %}" name="start_datetime" required>
         </td>
         <td>
-          <input type="datetime-local" name="end_datetime" required>
+          <input type="{% if poll.is_whole_day %}date{% else %}datetime-local{% endif %}" name="end_datetime" required>
         </td>
         <td>
           <input class="green" type="submit" value="Add">
@@ -94,7 +81,9 @@
 </div>
 
 <script>
+const isWholeDay = {% if poll.is_whole_day %}true{% else %}false{% endif %};
 const hour = 1000 * 60 * 60;
+const day = hour * 24;
 
 const startDatetimeInput = document.querySelector('input[name="start_datetime"]');
 const endDatetimeInput = document.querySelector('input[name="end_datetime"]');
@@ -103,15 +92,38 @@ const lastStartDatetimeInput = document.getElementById('last-start-datetime');
 const lastEndDatetimeInput = document.getElementById('last-end-datetime');
 
 if (lastStartDatetimeInput !== null && startDatetimeInput.valueAsDate === null) {
-  startDatetimeInput.valueAsDate = new Date(lastStartDatetimeInput.valueAsDate.getTime() + hour);
+  if (isWholeDay) {
+    // set the start date to the last end date + 1 day if in whole day mode
+    startDatetimeInput.valueAsDate = new Date(lastEndDatetimeInput.valueAsDate.getTime() + day);
+    endDatetimeInput.valueAsDate = new Date(startDatetimeInput.valueAsDate.getTime());
+  } else {
+    // set the start date to the last end date + 1 hour if not in whole day mode
+    startDatetimeInput.valueAsDate = new Date(lastEndDatetimeInput.valueAsDate.getTime());
+    endDatetimeInput.valueAsDate = new Date(startDatetimeInput.valueAsDate.getTime() + hour);
+  }
 }
 
-startDatetimeInput.addEventListener('blur', onStartDatetimeBlur);
+startDatetimeInput.addEventListener('change', onStartDatetimeChange);
 
-function onStartDatetimeBlur(event) {
+function onStartDatetimeChange(event) {
   const endDatetimeInput = document.querySelector('input[name="end_datetime"]');
   if (endDatetimeInput.valueAsDate === null) {
-    endDatetimeInput.valueAsDate = new Date(event.target.valueAsDate.getTime() + hour);
+    if (isWholeDay) {
+      // set the end date to the start date if in whole day mode
+      endDatetimeInput.valueAsDate = new Date(event.target.valueAsDate.getTime());
+    } else {
+      // set the end date to the start date + 1 hour if not in whole day mode
+      endDatetimeInput.valueAsDate = new Date(event.target.valueAsDate.getTime() + hour);
+    }
+  }
+}
+
+const query = new URLSearchParams(window.location.search);
+const focusNext = query.get('focus_next');
+if (focusNext !== null) {
+  const nextInput = document.querySelector(`input[name="start_datetime"]`);
+  if (nextInput !== null) {
+    nextInput.focus();
   }
 }
 </script>

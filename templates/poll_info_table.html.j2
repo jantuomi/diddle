@@ -1,0 +1,24 @@
+<table>
+  <tbody>
+    <tr>
+      <td><label for="title">Title</label></td>
+      <td><input type="text" name="title" value="{% if poll %}{{ poll.title }}{% endif %}" required></td>
+    </tr>
+    <tr>
+      <td><label for="description">Description (optional)</label></td>
+      <td><textarea name="description">{% if poll %}{{ poll.description }}{% endif %}</textarea></td>
+    </tr>
+    <tr>
+      <td><label for="author_name">Your name</label></td>
+      <td><input type="text" name="author_name" value="{% if poll %}{{ poll.author_name }}{% endif %}" required></td>
+    </tr>
+    <tr>
+      <td><label for="author_email">Your email (optional)</label></td>
+      <td><input type="text" name="author_email" value="{% if poll %}{{ poll.author_email }}{% endif %}"></td>
+    </tr>
+    <tr>
+      <td><label for="is_whole_day">Whole day event?</label></td>
+      <td class="checkbox-field"><input type="checkbox" name="is_whole_day" {% if poll and poll.is_whole_day %}checked{% endif %}></td>
+    </tr>
+  </tbody>
+</table>

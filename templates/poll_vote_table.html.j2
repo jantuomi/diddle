@@ -3,25 +3,7 @@
     <th></th>
     {% for choice in choices %}
     <th>
-      {{ choice.start_datetime.strftime("%a %d.%m") }}
-      <span>
-        {% if now.year != choice.start_datetime.year %}.{{choice.start_datetime.year}}{% endif %}
-      </span>
-      <span>
-        {{ choice.start_datetime.strftime("%H:%M") }}
-      </span>
-      <span>&mdash;</span>
-      {% if not choice.ends_on_same_day() %}
-      <span>
-        {{ choice.end_datetime.strftime("%a %d.%m") }}
-      </span>
-      <span>
-        {% if now.year != choice.end_datetime.year %}.{{choice.end_datetime.year}}{% endif %}
-      </span>
-      {% endif %}
-      <span>
-        {{ choice.end_datetime.strftime("%H:%M") }}
-      </span>
+      {% include "poll_choice_datetime_range.html.j2" %}
       <span>
         <i>{{ choice.votes | length }} votes</i>
       </span>
