@@ -16,17 +16,21 @@
     </th>
     {% endfor %}
   </tr>
-  {% for voter in choices_by_voter %}
+  {% for voter_name in voter_names %}
   <tr>
-    <td>{{ voter.name }}</td>
-    {% for voted in voter.votes %}
-    {% if voted %}
+    <td>{{ voter_name }}</td>
+    {% for choice in choices %}
+    {% if selections[(voter_name, choice.id)] == 1 %}
     <td>
       <input type="checkbox" checked disabled>
     </td>
-    {% else %}
+    {% elif selections[(voter_name, choice.id)] == 0 %}
     <td>
       <input type="checkbox" disabled>
+    </td>
+    {% else %}
+    <td>
+      ??
     </td>
     {% endif %}
     {% endfor %}

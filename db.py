@@ -1,4 +1,5 @@
 import os
+from typing import Literal
 from dataclasses import dataclass
 import datetime
 import psycopg2
@@ -53,6 +54,7 @@ class Vote:
   poll_id: str
   choice_id: str
   voter_name: str
+  value: int # 0 or 1
 
 @dataclass
 class Choice:
@@ -112,6 +114,7 @@ def tuple_to_vote(vote_t: tuple) -> Vote:
     poll_id=vote_t[1],
     choice_id=vote_t[2],
     voter_name=vote_t[3],
+    value=vote_t[4],
   )
 
 def get_poll(id: str):
@@ -178,13 +181,14 @@ def create_poll(title: str,
       conn.rollback()
       raise e
 
-def vote_poll(poll_id: str, voter_name: str, choice_ids: list[str]):
+def vote_poll(poll_id: str, voter_name: str, selections: dict[str, int]) -> None:
   with db.cursor() as (conn, cur):
     try:
-      for choice_id in choice_ids:
-        cur.execute("INSERT INTO votes (poll_id, voter_name, choice_id)"
-                    "VALUES (%s, %s, %s)",
-                    (poll_id, voter_name, choice_id))
+      for choice_id in selections:
+        value = selections[choice_id]
+        cur.execute("INSERT INTO votes (poll_id, voter_name, choice_id, value)"
+                    "VALUES (%s, %s, %s, %s)",
+                    (poll_id, voter_name, choice_id, value))
 
       conn.commit()
     except Exception as e:

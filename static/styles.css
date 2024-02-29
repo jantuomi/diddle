@@ -136,3 +136,7 @@ table {
 input[type="checkbox"] {
   cursor: pointer;
 }
+
+input[type="checkbox"]:disabled {
+  cursor: initial;
+}

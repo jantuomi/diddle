@@ -25,11 +25,11 @@ AUTHOR_NAME_MAX_LENGTH = 100
 AUTHOR_EMAIL_MAX_LENGTH = 100
 VOTER_NAME_MAX_LENGTH = 100
 
-def voter_voted_on_choice(voter_name: str, choice: db.Choice) -> bool:
+def voter_selection_on_choice(voter_name: str, choice: db.Choice) -> int | None:
   for vote in choice.votes:
     if vote.voter_name == voter_name:
-      return True
-  return False
+      return vote.value
+  return None
 
 def validation_error(message: str):
   return render_template("error.html.j2", error=message), 400
@@ -80,6 +80,8 @@ def create():
   resp.set_cookie(f"diddle_manage_code_{poll.manage_code}", "1")
   return resp
 
+
+VoterNameChoiceIdPair = tuple[str, str]
 @app.get("/poll/<id>")
 def poll(id):
   poll = db.get_poll(id)
@@ -88,29 +90,21 @@ def poll(id):
 
   display_mode = request.cookies.get("diddle_display_mode", "table")
 
-  voter_names = []
+  voter_names_set: set[str] = set()
+  selections: dict[VoterNameChoiceIdPair, int] = {}
   for choice in poll.choices:
     for vote in choice.votes:
-      if vote.voter_name not in voter_names:
-        voter_names.append(vote.voter_name)
+      selections[(vote.voter_name, choice.id)] = vote.value
+      voter_names_set.add(vote.voter_name)
 
-  choices_by_voter = []
-  for voter_name in voter_names:
-    votes: list[bool] = []
-    for choice in poll.choices:
-      voted = voter_voted_on_choice(voter_name, choice)
-      votes.append(voted)
-
-    choices_by_voter.append(
-      ChoicesByVoter(name=voter_name, votes=votes)
-    )
-
-  choices_by_voter.sort(key=lambda x: x.name)
+  voter_names = list(voter_names_set)
+  voter_names.sort()
 
   return render_template('poll.html.j2',
                          poll=poll,
-                         choices_by_voter=choices_by_voter,
+                         selections=selections,
                          choices=poll.choices,
+                         voter_names=voter_names,
                          now=datetime.datetime.now(),
                          display_mode=display_mode,
   )
@@ -123,14 +117,22 @@ def vote_poll(id):
   if len(form["voter_name"]) > VOTER_NAME_MAX_LENGTH:
     return validation_error(f"Voter name must be {VOTER_NAME_MAX_LENGTH} characters or fewer")
 
-  voter_name = form["voter_name"]
-  choice_ids = []
+  poll = db.get_poll(id)
+  if poll is None:
+    return validation_error("Poll not found")
+
+  voter_name: str = form["voter_name"]
+
+  selections: dict[str, int] = {}
+  for choice in poll.choices:
+    selections[choice.id] = 0
+
   for k in form.keys():
     if k.startswith("choice_"):
       choice_id = k.replace("choice_", "")
-      choice_ids.append(choice_id)
+      selections[choice_id] = 1
 
-  db.vote_poll(id, voter_name, choice_ids)
+  db.vote_poll(id, voter_name, selections)
 
   email_client.send_participation_email_if_enabled(poll_id=id, voter_name=voter_name)
 
