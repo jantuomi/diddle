@@ -79,7 +79,8 @@ def create():
   resp = make_response(
     redirect(f"/manage/{poll.manage_code}")
   )
-  resp.set_cookie(f"diddle_manage_code_{poll.manage_code}", "1")
+  resp.set_cookie(f"diddle_manage_code_{poll.manage_code}", "1",
+                  samesite="Strict", secure=False)
   return resp
 
 
@@ -119,7 +120,8 @@ def poll(id):
                     now=datetime.datetime.now(),
                     display_mode=display_mode))
 
-  resp.set_cookie("diddle_display_mode", display_mode)
+  resp.set_cookie("diddle_display_mode", display_mode,
+                  samesite="Lax", secure=False)
   return resp
 
 
@@ -218,7 +220,8 @@ def manage(code):
     render_template("manage.html.j2",
                     poll=poll,
                     last_choice_id=last_choice_id))
-  resp.set_cookie(f"diddle_manage_code_{code}", "1")
+  resp.set_cookie(f"diddle_manage_code_{code}", "1",
+                  samesite="Strict", secure=False)
   return resp
 
 @app.post("/manage/<code>/delete")
@@ -230,7 +233,8 @@ def delete_poll(code):
 def confirm_delete_poll(code):
   db.delete_poll(code)
   resp = make_response(redirect("/"))
-  resp.set_cookie(f"diddle_manage_code_{code}", "", expires=0)
+  resp.set_cookie(f"diddle_manage_code_{code}", "", expires=0,
+                  samesite="Strict", secure=False)
   return resp
 
 @app.post("/options/toggle_display_mode")
@@ -244,5 +248,6 @@ def toggle_display_mode():
     display_mode = "table"
 
   resp = make_response(redirect(redirect_url))
-  resp.set_cookie("diddle_display_mode", display_mode)
+  resp.set_cookie("diddle_display_mode", display_mode,
+                  samesite="Lax", secure=False)
   return resp
