@@ -20,6 +20,7 @@ You can also run the app without containerization:
 
     pip install -r requirements.txt # install pip dependencies
     touch .env                      # put your env vars here
+    python apply_migrations.py      # prepare the database
     gunicorn --bind "0.0.0.0:8000" -w 4 app:app
 
 ## Environment variables

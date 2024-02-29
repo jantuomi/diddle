@@ -7,7 +7,10 @@ import os
 import traceback
 from dataclasses import dataclass
 from flask import Flask, render_template, redirect, request, make_response
+from flask_compress import Compress
+
 app = Flask(__name__)
+Compress(app)
 
 import db
 import email_client
