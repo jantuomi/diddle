@@ -37,8 +37,9 @@ You can also run the app without containerization:
 | EMAIL_PORT | SMTP port |
 | EMAIL_HOST_USER | SMTP host user |
 | EMAIL_HOST_PASSWORD | SMTP host password |
-| EMAIL_USE_TLS | Use TLS with SMTP? |
-| EMAIL_MESSAGE_FROM | Email message from header |
+| EMAIL_USE_TLS | Use STARTTLS with SMTP? |
+| EMAIL_HEADERS | Additional SMTP headers, format: `header1=foo,header2=bar` |
+| EMAIL_MESSAGE_FROM | Email message from address |
 
 `EMAIL_` variables are only required if at least one of them is defined.
 

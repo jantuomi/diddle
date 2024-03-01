@@ -33,28 +33,28 @@ if email_enabled:
   email_host_password = os.environ["EMAIL_HOST_PASSWORD"]
   email_use_tls = os.environ["EMAIL_USE_TLS"].lower() in ["true", "1", "yes"]
   email_message_from = os.environ["EMAIL_MESSAGE_FROM"]
+  email_headers_raw = os.environ.get("EMAIL_HEADERS", "")
+  email_headers: dict[str, str] = {}
+  for header in email_headers_raw.split(","):
+    if not header:
+      continue
+    key, value = header.split("=", 1)
+    email_headers[key] = value
 
   print(f"SMTP email client enabled using email host {email_host}")
 
   def _actual_send_email(subject: str, body: str, recipient: str):
     if not email_enabled:
       return
-    
-    print("debug: subject:", subject)
-    print("debug: body:", body)
-    print("debug: recipient:", recipient)
-    print("debug: email_host:", email_host)
-    print("debug: email_port:", email_port)
-    print("debug: email_host_user:", email_host_user)
-    print("debug: email_host_password:", email_host_password)
-    print("debug: email_use_tls:", email_use_tls)
-    print("debug: email_message_from:", email_message_from)
 
     msg = MIMEMultipart()
-    msg['From'] = email_host_user
+    msg['From'] = email_message_from
     msg['To'] = recipient
     msg['Subject'] = subject
     msg.attach(MIMEText(body, 'plain'))
+    msg.add_header("Content-Type", "text/plain; charset=utf-8")
+    for key, value in email_headers.items():
+      msg.add_header(key, value)
 
     with smtplib.SMTP(email_host, email_port) as server:
       if email_use_tls:
