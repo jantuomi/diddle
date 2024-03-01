@@ -6,6 +6,10 @@ import os
 import sys
 import traceback
 import uuid
+import threading
+import queue
+import time
+from typing import Callable
 from user_agents import parse as parse_user_agent
 from dataclasses import dataclass
 from flask import Flask, render_template, redirect, request, make_response
@@ -29,6 +33,9 @@ DESCRIPTION_MAX_LENGTH = 1000
 AUTHOR_NAME_MAX_LENGTH = 100
 AUTHOR_EMAIL_MAX_LENGTH = 100
 VOTER_NAME_MAX_LENGTH = 100
+
+Task = Callable[[], None]
+background_tasks_queue: queue.Queue[Task] = queue.Queue()
 
 def voter_selection_on_choice(voter_name: str, choice: db.Choice) -> int | None:
   for vote in choice.votes:
@@ -95,7 +102,11 @@ def create():
     choices,
   )
 
-  email_client.send_poll_created_email_if_enabled(poll_id=poll.id)
+  if email_client.email_enabled:
+    def task():
+      email_client.send_poll_created_email(poll_id=poll.id)
+
+    background_tasks_queue.put(task)
 
   resp = make_response(
     redirect(f"/manage/{poll.manage_code}")
@@ -190,7 +201,10 @@ def vote_poll(id):
 
   manage_code = db.vote_poll(id, voter_name, selections)
 
-  email_client.send_participation_email_if_enabled(poll_id=id, voter_name=voter_name)
+  if email_client.email_enabled:
+    def task():
+      email_client.send_participation_email(poll_id=id, voter_name=voter_name)
+    background_tasks_queue.put(task)
 
   response = make_response(
     redirect(f"/poll/{id}")
@@ -346,3 +360,14 @@ def toggle_display_mode():
   resp.set_cookie("diddle_display_mode", display_mode,
                   samesite="Lax", secure=False)
   return resp
+
+### Background thread
+
+def background_thread():
+  print("Background thread started")
+  while True:
+    task = background_tasks_queue.get()
+    task()
+    time.sleep(0.1)
+
+threading.Thread(target=background_thread, daemon=True).start()

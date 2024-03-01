@@ -67,38 +67,38 @@ if email_enabled:
 else:
   print("SMTP email client not enabled")
 
-def send_participation_email_if_enabled(poll_id: str, voter_name: str):
-  if email_enabled:
-    poll = db.get_poll(poll_id)
-    if not poll or poll.author_email is None:
-      return
+def send_participation_email(poll_id: str, voter_name: str):
+  poll = db.get_poll(poll_id)
+  if not poll or poll.author_email is None:
+    return
 
-    try:
-      send_email(
-        subject=f"{voter_name} participated in your poll \"{poll.title}\"",
-        body=f"{voter_name} participated in your diddle \"{poll.title}\".\n\n"
-             f"View the results at {BASE_URL}/poll/{poll.id}\n"
-             f"Manage your diddle at {BASE_URL}/manage/{poll.manage_code}\n"
-              "You will be notified by email when someone participates.",
-        recipient=poll.author_email,
-      )
-    except Exception as e:
-      traceback.print_exc(file=sys.stderr)
-      print(f"Failed to send participation email to {poll.author_email}", file=sys.stderr)
+  print(f"Sending participation email to {poll.author_email}")
+  try:
+    send_email(
+      subject=f"{voter_name} participated in your poll \"{poll.title}\"",
+      body=f"{voter_name} participated in your diddle \"{poll.title}\".\n\n"
+            f"View the results at {BASE_URL}/poll/{poll.id}\n"
+            f"Manage your diddle at {BASE_URL}/manage/{poll.manage_code}\n"
+            "You will be notified by email when someone participates.",
+      recipient=poll.author_email,
+    )
+  except Exception as e:
+    traceback.print_exc(file=sys.stderr)
+    print(f"Failed to send participation email to {poll.author_email}", file=sys.stderr)
 
-def send_poll_created_email_if_enabled(poll_id: str):
-  if email_enabled:
-    poll = db.get_poll(poll_id)
-    if not poll or poll.author_email is None:
-      return
+def send_poll_created_email(poll_id: str):
+  poll = db.get_poll(poll_id)
+  if not poll or poll.author_email is None:
+    return
 
-    try:
-      send_email(
-        subject=f"You created a new diddle \"{poll.title}\"",
-        body=f"Manage your diddle at {BASE_URL}/manage/{poll.manage_code}\n"
-              "You will be notified by email when someone participates.",
-        recipient=poll.author_email,
-      )
-    except Exception as e:
-      traceback.print_exc(file=sys.stderr)
-      print(f"Failed to send poll created email to {poll.author_email}", file=sys.stderr)
+  print(f"Sending poll created email to {poll.author_email}")
+  try:
+    send_email(
+      subject=f"You created a new diddle \"{poll.title}\"",
+      body=f"Manage your diddle at {BASE_URL}/manage/{poll.manage_code}\n"
+            "You will be notified by email when someone participates.",
+      recipient=poll.author_email,
+    )
+  except Exception as e:
+    traceback.print_exc(file=sys.stderr)
+    print(f"Failed to send poll created email to {poll.author_email}", file=sys.stderr)
