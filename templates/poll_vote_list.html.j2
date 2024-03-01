@@ -7,7 +7,7 @@
         {% include "poll_choice_datetime_range.html.j2" %}
       </strong>
       <span>
-        <i>{{ choice.votes | length }}&nbsp;votes</i>
+        <i>{{ choice.votes_with_value(1) | length }}&nbsp;votes</i>
       </span>
       <div>
         {% if choice.votes_with_value(1) | length != 0 %}
