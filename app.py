@@ -46,7 +46,8 @@ def index():
   created_polls = db.get_polls_by_codes(created_poll_codes) if len(created_poll_codes) > 0 else []
 
   return render_template('index.html.j2',
-                         created_polls=created_polls)
+                         created_polls=created_polls,
+                         now=datetime.datetime.now())
 
 @app.post("/poll/create")
 def create():
