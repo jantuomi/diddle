@@ -250,13 +250,17 @@ def update_poll_info(
     author_name,
     author_email,
     is_whole_day,
-  ) -> None:
+  ) -> str | None:
+  """Returns the id of the updated poll or None if not found."""
   with db.cursor() as (conn, cur):
     try:
       cur.execute("UPDATE polls SET title = %s, description = %s, author_name = %s, author_email = %s, whole_day = %s "
-                  "WHERE manage_code = %s",
+                  "WHERE manage_code = %s "
+                  "RETURNING id",
                   (title, description, author_name, author_email, is_whole_day, code))
+      changed = cur.fetchone()
       conn.commit()
+      return changed[0] if changed else None
     except Exception as e:
       conn.rollback()
       raise e
@@ -273,7 +277,8 @@ def add_choice_to_poll(
   with db.cursor() as (conn, cur):
     try:
       cur.execute("INSERT INTO choices (poll_id, start_datetime, end_datetime)"
-                  "VALUES (%s, %s, %s)",
+                  "VALUES (%s, %s, %s) "
+                  "RETURNING id",
                   (poll.id, start_datetime, end_datetime))
       conn.commit()
     except Exception as e:

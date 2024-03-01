@@ -3,6 +3,9 @@ load_dotenv()
 
 import datetime
 import os
+import sys
+import traceback
+import uuid
 from user_agents import parse as parse_user_agent
 from dataclasses import dataclass
 from flask import Flask, render_template, redirect, request, make_response
@@ -33,8 +36,24 @@ def voter_selection_on_choice(voter_name: str, choice: db.Choice) -> int | None:
       return vote.value
   return None
 
-def validation_error(message: str):
-  return render_template("error.html.j2", error=message), 400
+def error_page(message: str, code: int = 400):
+  return render_template("error.html.j2", error=message), code
+
+@app.errorhandler(404)
+def not_found(e):
+  return error_page("Not found", 404)
+
+@app.errorhandler(Exception)
+def error_handler(e):
+  traceback.print_exception(e, file=sys.stderr)
+  return error_page("Internal server error", 500)
+
+def validate_uuid(s: str) -> bool:
+  try:
+    uuid.UUID(s)
+    return True
+  except ValueError:
+    return False
 
 @app.route("/")
 def index():
@@ -54,17 +73,17 @@ def create():
   form = request.form
 
   if "title" not in form or len(form["title"]) == 0:
-    return validation_error("Title is required")
+    return error_page("Title is required")
   if len(form["title"]) > TITLE_MAX_LENGTH:
-    return validation_error(f"Title must be {TITLE_MAX_LENGTH} characters or fewer")
+    return error_page(f"Title must be {TITLE_MAX_LENGTH} characters or fewer")
   if "description" in form and len(form["description"]) > DESCRIPTION_MAX_LENGTH:
-    return validation_error(f"Description must be {DESCRIPTION_MAX_LENGTH} characters or fewer")
+    return error_page(f"Description must be {DESCRIPTION_MAX_LENGTH} characters or fewer")
   if "author_name" not in form or len(form["author_name"]) == 0:
-    return validation_error("Author name is required")
+    return error_page("Author name is required")
   if len(form["author_name"]) > AUTHOR_NAME_MAX_LENGTH:
-    return validation_error(f"Author name must be {AUTHOR_NAME_MAX_LENGTH} characters or fewer")
+    return error_page(f"Author name must be {AUTHOR_NAME_MAX_LENGTH} characters or fewer")
   if "author_email" in form and len(form["author_email"]) > AUTHOR_EMAIL_MAX_LENGTH:
-    return validation_error(f"Author email must be {AUTHOR_EMAIL_MAX_LENGTH} characters or fewer")
+    return error_page(f"Author email must be {AUTHOR_EMAIL_MAX_LENGTH} characters or fewer")
 
   choices = []
   poll = db.create_poll(
@@ -89,9 +108,12 @@ def create():
 VoterNameChoiceIdPair = tuple[str, str]
 @app.get("/poll/<id>")
 def poll(id):
+  if not validate_uuid(id):
+    return error_page("Invalid poll ID", 400)
+
   poll = db.get_poll(id)
   if poll is None:
-    return "Poll not found", 404
+    return error_page("Poll not found", 404)
 
   display_mode_cookie = request.cookies.get("diddle_display_mode")
   if display_mode_cookie is None:
@@ -129,15 +151,18 @@ def poll(id):
 
 @app.post("/poll/<id>/vote")
 def vote_poll(id):
+  if not validate_uuid(id):
+    return error_page("Invalid poll ID", 400)
+
   form = request.form
   if "voter_name" not in form or len(form["voter_name"]) == 0:
-    return validation_error("Voter name is required")
+    return error_page("Voter name is required")
   if len(form["voter_name"]) > VOTER_NAME_MAX_LENGTH:
-    return validation_error(f"Voter name must be {VOTER_NAME_MAX_LENGTH} characters or fewer")
+    return error_page(f"Voter name must be {VOTER_NAME_MAX_LENGTH} characters or fewer")
 
   poll = db.get_poll(id)
   if poll is None:
-    return validation_error("Poll not found")
+    return error_page("Poll not found")
 
   voter_name: str = form["voter_name"]
 
@@ -158,22 +183,25 @@ def vote_poll(id):
 
 @app.post("/manage/<code>/update_info")
 def update_poll_info(code):
+  if not validate_uuid(code):
+    return error_page("Invalid manage code", 400)
+
   form = request.form
 
   if "title" not in form or len(form["title"]) == 0:
-    return validation_error("Title is required")
+    return error_page("Title is required")
   if len(form["title"]) > TITLE_MAX_LENGTH:
-    return validation_error(f"Title must be {TITLE_MAX_LENGTH} characters or fewer")
+    return error_page(f"Title must be {TITLE_MAX_LENGTH} characters or fewer")
   if "description" in form and len(form["description"]) > DESCRIPTION_MAX_LENGTH:
-    return validation_error(f"Description must be {DESCRIPTION_MAX_LENGTH} characters or fewer")
+    return error_page(f"Description must be {DESCRIPTION_MAX_LENGTH} characters or fewer")
   if "author_name" not in form or len(form["author_name"]) == 0:
-    return validation_error("Author name is required")
+    return error_page("Author name is required")
   if len(form["author_name"]) > AUTHOR_NAME_MAX_LENGTH:
-    return validation_error(f"Author name must be {AUTHOR_NAME_MAX_LENGTH} characters or fewer")
+    return error_page(f"Author name must be {AUTHOR_NAME_MAX_LENGTH} characters or fewer")
   if "author_email" in form and len(form["author_email"]) > AUTHOR_EMAIL_MAX_LENGTH:
-    return validation_error(f"Author email must be {AUTHOR_EMAIL_MAX_LENGTH} characters or fewer")
+    return error_page(f"Author email must be {AUTHOR_EMAIL_MAX_LENGTH} characters or fewer")
 
-  db.update_poll_info(
+  changed = db.update_poll_info(
     code,
     form["title"],
     form["description"],
@@ -182,17 +210,23 @@ def update_poll_info(code):
     "is_whole_day" in form,
   )
 
+  if changed is None:
+    return error_page("Poll not found", 404)
+
   return redirect(f"/manage/{code}")
 
 @app.post("/manage/<code>/add_choice")
 def add_choice(code):
+  if not validate_uuid(code):
+    return error_page("Invalid manage code", 400)
+
   form = request.form
   if "start_datetime" not in form or len(form["start_datetime"]) == 0:
-    return validation_error("Start datetime is required")
+    return error_page("Start datetime is required")
   if "end_datetime" not in form or len(form["end_datetime"]) == 0:
-    return validation_error("End datetime is required")
+    return error_page("End datetime is required")
   if form["start_datetime"] > form["end_datetime"]:
-    return validation_error("Start datetime must be before end datetime")
+    return error_page("Start datetime must be before end datetime")
 
   start_datetime = form["start_datetime"]
   if len(start_datetime) == 10:
@@ -212,9 +246,12 @@ def add_choice(code):
 
 @app.post("/manage/<code>/delete_choice/<choice_id>")
 def delete_choice(code, choice_id):
+  if not validate_uuid(code):
+    return error_page("Invalid manage code", 400)
+
   poll = db.get_poll_by_code(code)
   if poll is None:
-    return "Poll not found", 404
+    return error_page("Poll not found", code=404)
 
   db.delete_choice(choice_id)
 
@@ -222,9 +259,12 @@ def delete_choice(code, choice_id):
 
 @app.get("/manage/<code>")
 def manage(code):
+  if not validate_uuid(code):
+    return error_page("Invalid manage code", 400)
+
   poll = db.get_poll_by_code(code)
   if poll is None:
-    return validation_error("Poll not found")
+    return error_page("Poll not found")
 
   last_choice_id = poll.choices[-1].id if len(poll.choices) > 0 else None
   resp = make_response(
@@ -237,11 +277,17 @@ def manage(code):
 
 @app.post("/manage/<code>/delete")
 def delete_poll(code):
+  if not validate_uuid(code):
+    return error_page("Invalid manage code", 400)
+
   poll = db.get_poll_by_code(code)
   return render_template("poll_confirm_delete.html.j2", poll=poll)
 
 @app.post("/manage/<code>/confirm_delete")
 def confirm_delete_poll(code):
+  if not validate_uuid(code):
+    return error_page("Invalid manage code", 400)
+
   db.delete_poll(code)
   resp = make_response(redirect("/"))
   resp.set_cookie(f"diddle_manage_code_{code}", "", expires=0,
