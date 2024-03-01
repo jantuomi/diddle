@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h2>Managing poll <span class="contrast">{{ poll.title }}</span> by <i>{{ poll.author_name }}</i></h2>
+<h2>Managing <span class="contrast">{{ poll.title }}</span> by <i>{{ poll.author_name }}</i></h2>
 <p>{{ poll.pub_date_formatted_notz() }}.</p>
 
 <div>
@@ -11,7 +11,7 @@
 </div>
 <p></p>
 <div>
-  <strong>Note!</strong> You can only edit this poll if you have this URL or use the same browser session:<br>
+  <strong>Note!</strong> You can only edit this diddle if you have this URL or use the same browser session:<br>
   <a id="manage-link" href="{{ poll.manage_url() }}">{{ poll.manage_url() }}</a>
 </div>
 <p></p>
