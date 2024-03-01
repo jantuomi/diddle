@@ -12,7 +12,17 @@
   </tr>
   {% for voter_name in voter_names %}
   <tr>
-    <td>{{ voter_name }}</td>
+    <td>
+      {% if voter_name in managed_voter_names %}
+      <form action="/poll/{{ poll.id }}/delete_voter" method="post">
+        <input type="hidden" name="voter_code" value="{{ managed_voter_names[voter_name] }}">
+        {{ voter_name }}
+        <input class="delete-voter-btn" type="submit" value="❌">
+      </form>
+      {% else %}
+      {{ voter_name }}
+      {% endif %}
+    </td>
     {% for choice in choices %}
     {% if selections[(voter_name, choice.id)] == 1 %}
     <td>
@@ -32,10 +42,13 @@
   {% endfor %}
 
   <!-- Add a row for the current user -->
+  <form action="/poll/{{ poll.id }}/vote" method="post">
   <tr>
     <td>
       <label for="voter_name" hidden>Your name</label>
-      <input type="text" name="voter_name" placeholder="Your name" required>
+      <input type="text" name="voter_name" placeholder="Your name" required
+             {% if prefill_voter_name %}value="{{ prefill_voter_name }}"{% endif %}>
+      <input class="green" type="submit" value="Submit">
     </td>
     {% for choice in choices %}
     <td>
@@ -43,7 +56,7 @@
     </td>
     {% endfor %}
   </tr>
+  </form>
   <!-- End of the row for the current user -->
 </table>
 
-<input class="green" type="submit" value="Submit">

@@ -111,6 +111,13 @@ def poll(id):
   if not validate_uuid(id):
     return error_page("Invalid poll ID", 400)
 
+  prefill_voter_name = request.args.get("prefill_voter_name")
+
+  voter_codes: list[str] = []
+  for k, _ in request.cookies.items():
+    if k.startswith("diddle_voter_code_"):
+      voter_codes.append(k.replace("diddle_voter_code_", ""))
+
   poll = db.get_poll(id)
   if poll is None:
     return error_page("Poll not found", 404)
@@ -127,10 +134,14 @@ def poll(id):
 
   voter_names_set: set[str] = set()
   selections: dict[VoterNameChoiceIdPair, int] = {}
+  managed_voter_names: dict[str, str] = {}
   for choice in poll.choices:
     for vote in choice.votes:
       selections[(vote.voter_name, choice.id)] = vote.value
       voter_names_set.add(vote.voter_name)
+
+      if vote.manage_code in voter_codes:
+        managed_voter_names[vote.voter_name] = vote.manage_code
 
   voter_names = list(voter_names_set)
   voter_names.sort()
@@ -140,7 +151,9 @@ def poll(id):
                     poll=poll,
                     selections=selections,
                     choices=poll.choices,
+                    prefill_voter_name=prefill_voter_name,
                     voter_names=voter_names,
+                    managed_voter_names=managed_voter_names,
                     now=datetime.datetime.now(),
                     display_mode=display_mode))
 
@@ -175,11 +188,36 @@ def vote_poll(id):
       choice_id = k.replace("choice_", "")
       selections[choice_id] = 1
 
-  db.vote_poll(id, voter_name, selections)
+  manage_code = db.vote_poll(id, voter_name, selections)
 
   email_client.send_participation_email_if_enabled(poll_id=id, voter_name=voter_name)
 
-  return redirect(f"/poll/{id}")
+  response = make_response(
+    redirect(f"/poll/{id}")
+  )
+  response.set_cookie(f"diddle_voter_code_{manage_code}", "1",
+                      samesite="Strict", secure=False)
+  return response
+
+@app.post("/poll/<id>/delete_voter")
+def delete_voter(id):
+  if not validate_uuid(id):
+    return error_page("Invalid poll ID", 400)
+
+  voter_manage_code = request.form["voter_code"]
+
+  voter_name = db.get_voter_name_by_manage_code(voter_manage_code)
+  if voter_name is None:
+    return error_page("Voter not found", 404)
+
+  db.delete_voter(voter_manage_code)
+
+  resp = make_response(
+    redirect(f"/poll/{id}?prefill_voter_name={voter_name}")
+  )
+  resp.set_cookie(f"diddle_voter_code_{voter_manage_code}", "", expires=0,
+                  samesite="Strict", secure=False)
+  return resp
 
 @app.post("/manage/<code>/update_info")
 def update_poll_info(code):

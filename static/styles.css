@@ -122,6 +122,10 @@ table {
   margin: 0;
 }
 
+.vote-table input[name="voter_name"] {
+  max-width: 150px;
+}
+
 .danger-zone {
   margin-top: 40px;
 }
@@ -183,4 +187,10 @@ button#share-link-copy {
   color: black;
   font-size: 25px;
   line-height: 16px;
+}
+
+input[type="submit"].delete-voter-btn {
+  margin-left: 5px;
+  background: none;
+  padding: 0;
 }

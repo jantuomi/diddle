@@ -3,6 +3,7 @@ from typing import Literal
 from dataclasses import dataclass
 import datetime
 import psycopg2
+import uuid
 
 BASE_URL = os.environ["BASE_URL"]
 
@@ -55,6 +56,7 @@ class Vote:
   choice_id: str
   voter_name: str
   value: int # 0 or 1
+  manage_code: str
 
 @dataclass
 class Choice:
@@ -138,6 +140,7 @@ def tuple_to_vote(vote_t: tuple) -> Vote:
     choice_id=vote_t[2],
     voter_name=vote_t[3],
     value=vote_t[4],
+    manage_code=vote_t[5]
   )
 
 def get_poll(id: str):
@@ -205,16 +208,18 @@ def create_poll(title: str,
       conn.rollback()
       raise e
 
-def vote_poll(poll_id: str, voter_name: str, selections: dict[str, int]) -> None:
+def vote_poll(poll_id: str, voter_name: str, selections: dict[str, int]) -> str:
+  """Returns the manage code of the vote."""
   with db.cursor() as (conn, cur):
     try:
+      manage_code = str(uuid.uuid4())
       for choice_id in selections:
         value = selections[choice_id]
-        cur.execute("INSERT INTO votes (poll_id, voter_name, choice_id, value)"
-                    "VALUES (%s, %s, %s, %s)",
-                    (poll_id, voter_name, choice_id, value))
-
+        cur.execute("INSERT INTO votes (poll_id, voter_name, choice_id, value, manage_code)"
+                    "VALUES (%s, %s, %s, %s, %s)",
+                    (poll_id, voter_name, choice_id, value, manage_code))
       conn.commit()
+      return manage_code
     except Exception as e:
       conn.rollback()
       raise e
@@ -305,6 +310,26 @@ def delete_poll(code: str) -> None:
   with db.cursor() as (conn, cur):
     try:
       cur.execute("DELETE FROM polls WHERE manage_code = %s", (code,))
+      conn.commit()
+    except Exception as e:
+      conn.rollback()
+      raise e
+
+def get_voter_name_by_manage_code(voter_manage_code: str) -> str | None:
+  with db.cursor() as (conn, cur):
+    try:
+      cur.execute("SELECT voter_name FROM votes WHERE manage_code = %s", (voter_manage_code,))
+      voter_name = cur.fetchone()
+      conn.commit()
+      return voter_name[0] if voter_name else None
+    except Exception as e:
+      conn.rollback()
+      raise e
+
+def delete_voter(voter_manage_code: str) -> None:
+  with db.cursor() as (conn, cur):
+    try:
+      cur.execute("DELETE FROM votes WHERE manage_code = %s", (voter_manage_code,))
       conn.commit()
     except Exception as e:
       conn.rollback()

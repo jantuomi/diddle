@@ -21,14 +21,23 @@
   </form>
 </div>
 
-<form action="/poll/{{ poll.id }}/vote" method="post">
-  {% if display_mode == "table" %}
-  {% include "poll_vote_table.html.j2" %}
-  {% else %}
-  {% include "poll_vote_list.html.j2" %}
-  {% endif %}
-</form>
+
+{% if display_mode == "table" %}
+{% include "poll_vote_table.html.j2" %}
+{% else %}
+{% include "poll_vote_list.html.j2" %}
 {% endif %}
 
+<script>
+  const query = new URLSearchParams(window.location.search);
+  const prefill_voter_name = query.get("prefill_voter_name");
+  if (prefill_voter_name !== null) {
+    document.querySelector("input[name=voter_name]").focus()
+    document.querySelector("input[name=voter_name]").select();
+    query.delete("prefill_voter_name");
+    history.replaceState(null, "", window.location.pathname + (query.toString() ? "?" + query.toString() : ""));
+  }
+  </script>
 
+{% endif %}
 {% endblock %}
