@@ -10,7 +10,8 @@
 </form>
 
 {% if created_polls | length != 0 %}
-<h3>My diddles</h3>
+<br>
+<h2>My diddles</h2>
 <ul>
   {% for poll in created_polls %}
   <li><a href="/manage/{{ poll.manage_code }}">{{ poll.title }}</a></li>
@@ -20,13 +21,11 @@
 
 <br>
 <br>
-<div>
-  <h3>About diddle</h3>
-  <p><i>diddle</i> is a minimalist, mobile friendly, fast and self-hosted scheduling tool,
-     licensed under <a href="https://github.com/jantuomi/diddle/blob/main/LICENSE">Apache 2.0.</a>
-  </p>
-  <p>
-    Find <i>diddle</i> on <a href="https://github.com/jantuomi/diddle">GitHub</a>. © {{ now.year }} Jan Tuomi. All rights reserved.
-  </p>
-</div>
+<h2>About diddle</h2>
+<p><i>diddle</i> is a minimalist, mobile friendly, fast and self-hosted scheduling tool,
+    licensed under <a href="https://github.com/jantuomi/diddle/blob/main/LICENSE">Apache 2.0.</a>
+</p>
+<p>
+  Find <i>diddle</i> on <a href="https://github.com/jantuomi/diddle">GitHub</a>. © {{ now.year }} Jan Tuomi. All rights reserved.
+</p>
 {% endblock %}
