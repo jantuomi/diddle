@@ -79,27 +79,33 @@ def index():
 def create():
   form = request.form
 
-  if "title" not in form or len(form["title"]) == 0:
+  title = form.get("title")
+  title = title.strip() if title is not None else None
+  if title is None or len(title) == 0:
     return error_page("Title is required")
-  if len(form["title"]) > TITLE_MAX_LENGTH:
+  if len(title) > TITLE_MAX_LENGTH:
     return error_page(f"Title must be {TITLE_MAX_LENGTH} characters or fewer")
-  if "description" in form and len(form["description"]) > DESCRIPTION_MAX_LENGTH:
+  description = form.get("description")
+  description = description.strip() if description is not None else None
+  if description is not None and len(description) > DESCRIPTION_MAX_LENGTH:
     return error_page(f"Description must be {DESCRIPTION_MAX_LENGTH} characters or fewer")
-  if "author_name" not in form or len(form["author_name"]) == 0:
+  author_name = form.get("author_name")
+  author_name = author_name.strip() if author_name is not None else None
+  if author_name is None or len(author_name) == 0:
     return error_page("Author name is required")
-  if len(form["author_name"]) > AUTHOR_NAME_MAX_LENGTH:
+  if len(author_name) > AUTHOR_NAME_MAX_LENGTH:
     return error_page(f"Author name must be {AUTHOR_NAME_MAX_LENGTH} characters or fewer")
-  if "author_email" in form and len(form["author_email"]) > AUTHOR_EMAIL_MAX_LENGTH:
+  author_email = form.get("author_email")
+  author_email = author_email.strip() if author_email is not None else None
+  if author_email is not None and len(author_email) > AUTHOR_EMAIL_MAX_LENGTH:
     return error_page(f"Author email must be {AUTHOR_EMAIL_MAX_LENGTH} characters or fewer")
 
-  choices = []
   poll = db.create_poll(
-    form["title"],
-    form["description"],
-    form["author_name"],
-    form["author_email"],
+    title,
+    description,
+    author_name,
+    author_email,
     "is_whole_day" in form,
-    choices,
   )
 
   if email_client.email_enabled:
@@ -179,16 +185,16 @@ def vote_poll(id):
     return error_page("Invalid poll ID", 400)
 
   form = request.form
-  if "voter_name" not in form or len(form["voter_name"]) == 0:
+  voter_name = form.get("voter_name")
+  voter_name = voter_name.strip() if voter_name is not None else None
+  if voter_name is None or len(voter_name) == 0:
     return error_page("Voter name is required")
-  if len(form["voter_name"]) > VOTER_NAME_MAX_LENGTH:
+  if len(voter_name) > VOTER_NAME_MAX_LENGTH:
     return error_page(f"Voter name must be {VOTER_NAME_MAX_LENGTH} characters or fewer")
 
   poll = db.get_poll(id)
   if poll is None:
     return error_page("Poll not found")
-
-  voter_name: str = form["voter_name"]
 
   selections: dict[str, int] = {}
   for choice in poll.choices:
@@ -200,6 +206,8 @@ def vote_poll(id):
       selections[choice_id] = 1
 
   manage_code = db.vote_poll(id, voter_name, selections)
+  if manage_code is None:
+    return error_page("That name is already in use")
 
   if email_client.email_enabled:
     def task():
@@ -240,25 +248,33 @@ def update_poll_info(code):
 
   form = request.form
 
-  if "title" not in form or len(form["title"]) == 0:
+  title = form.get("title")
+  title = title.strip() if title is not None else None
+  if title is None or len(title) == 0:
     return error_page("Title is required")
-  if len(form["title"]) > TITLE_MAX_LENGTH:
+  if len(title) > TITLE_MAX_LENGTH:
     return error_page(f"Title must be {TITLE_MAX_LENGTH} characters or fewer")
-  if "description" in form and len(form["description"]) > DESCRIPTION_MAX_LENGTH:
+  description = form.get("description")
+  description = description.strip() if description is not None else None
+  if description is not None and len(description) > DESCRIPTION_MAX_LENGTH:
     return error_page(f"Description must be {DESCRIPTION_MAX_LENGTH} characters or fewer")
-  if "author_name" not in form or len(form["author_name"]) == 0:
+  author_name = form.get("author_name")
+  author_name = author_name.strip() if author_name is not None else None
+  if author_name is None or len(author_name) == 0:
     return error_page("Author name is required")
-  if len(form["author_name"]) > AUTHOR_NAME_MAX_LENGTH:
+  if len(author_name) > AUTHOR_NAME_MAX_LENGTH:
     return error_page(f"Author name must be {AUTHOR_NAME_MAX_LENGTH} characters or fewer")
-  if "author_email" in form and len(form["author_email"]) > AUTHOR_EMAIL_MAX_LENGTH:
+  author_email = form.get("author_email")
+  author_email = author_email.strip() if author_email is not None else None
+  if author_email is not None and len(author_email) > AUTHOR_EMAIL_MAX_LENGTH:
     return error_page(f"Author email must be {AUTHOR_EMAIL_MAX_LENGTH} characters or fewer")
 
   changed = db.update_poll_info(
     code,
-    form["title"],
-    form["description"],
-    form["author_name"],
-    form["author_email"],
+    title,
+    description,
+    author_name,
+    author_email,
     "is_whole_day" in form,
   )
 

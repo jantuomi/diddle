@@ -179,11 +179,10 @@ def get_poll(id: str):
       raise e
 
 def create_poll(title: str,
-                description: str,
+                description: str | None,
                 author_name: str,
-                author_email: str,
-                is_whole_day: bool,
-                choices: list[Choice]):
+                author_email: str | None,
+                is_whole_day: bool):
 
   with db.cursor() as (conn, cur):
     try:
@@ -197,19 +196,14 @@ def create_poll(title: str,
 
       poll = tuple_to_poll(poll_t)
 
-      for choice in choices:
-        cur.execute("INSERT INTO choices (poll_id, start_datetime, end_datetime)"
-                    "VALUES (%s, %s, %s)",
-                    (poll.id, choice.start_datetime, choice.end_datetime))
-
       conn.commit()
       return poll
     except Exception as e:
       conn.rollback()
       raise e
 
-def vote_poll(poll_id: str, voter_name: str, selections: dict[str, int]) -> str:
-  """Returns the manage code of the vote."""
+def vote_poll(poll_id: str, voter_name: str, selections: dict[str, int]) -> str | None:
+  """Returns the manage code of the vote or None if the vote failed on unique constraint."""
   with db.cursor() as (conn, cur):
     try:
       manage_code = str(uuid.uuid4())
@@ -220,6 +214,9 @@ def vote_poll(poll_id: str, voter_name: str, selections: dict[str, int]) -> str:
                     (poll_id, voter_name, choice_id, value, manage_code))
       conn.commit()
       return manage_code
+    except psycopg2.errors.UniqueViolation:
+      conn.rollback()
+      return None
     except Exception as e:
       conn.rollback()
       raise e
@@ -240,12 +237,12 @@ def get_poll_by_code(code: str) -> Poll | None:
       raise e
 
 def update_poll_info(
-    code,
-    title,
-    description,
-    author_name,
-    author_email,
-    is_whole_day,
+    code: str,
+    title: str,
+    description: str | None,
+    author_name: str,
+    author_email: str | None,
+    is_whole_day: bool,
   ) -> str | None:
   """Returns the id of the updated poll or None if not found."""
   with db.cursor() as (conn, cur):
@@ -295,7 +292,8 @@ def get_polls_by_codes(codes: list[str]) -> list[Poll]:
   with db.cursor() as (conn, cur):
     try:
       codes_t = tuple(codes)
-      cur.execute("SELECT * FROM polls WHERE manage_code IN %s"
+      cur.execute("SELECT * FROM polls "
+                  "WHERE manage_code IN %s "
                   "ORDER BY pub_date DESC", (codes_t,))
       poll_ts = cur.fetchall()
       polls = [tuple_to_poll(poll_t) for poll_t in poll_ts]
