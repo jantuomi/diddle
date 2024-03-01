@@ -219,15 +219,6 @@ def vote_poll(poll_id: str, voter_name: str, selections: dict[str, int]) -> None
       conn.rollback()
       raise e
 
-def apply_migration(migration_sql: str) -> None:
-  with db.cursor() as (conn, cur):
-    try:
-      cur.execute(migration_sql)
-      conn.commit()
-    except Exception as e:
-      conn.rollback()
-      raise e
-
 def get_poll_by_code(code: str) -> Poll | None:
   with db.cursor() as (conn, cur):
     try:
@@ -315,6 +306,36 @@ def delete_poll(code: str) -> None:
     try:
       cur.execute("DELETE FROM polls WHERE manage_code = %s", (code,))
       conn.commit()
+    except Exception as e:
+      conn.rollback()
+      raise e
+
+### Migrations
+
+def ensure_migration_table_exists() -> None:
+  with db.cursor() as (conn, cur):
+    try:
+      cur.execute("CREATE TABLE IF NOT EXISTS applied_migrations ("
+                  "number INTEGER PRIMARY KEY"
+                  ")")
+      conn.commit()
+    except Exception as e:
+      conn.rollback()
+      raise e
+
+def ensure_migration_applied(number: int, migration_sql: str) -> bool:
+  """Returns True if the migration was applied, False if it was already applied."""
+  with db.cursor() as (conn, cur):
+    try:
+      cur.execute("SELECT * FROM applied_migrations WHERE number = %s", (number,))
+      if cur.fetchone() is not None:
+        return False
+
+      cur.execute("INSERT INTO applied_migrations (number) VALUES (%s)", (number,))
+      cur.execute(migration_sql)
+      conn.commit()
+      return True
+
     except Exception as e:
       conn.rollback()
       raise e
