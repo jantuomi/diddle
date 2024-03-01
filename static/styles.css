@@ -118,6 +118,11 @@ table {
   background-color: #f8f6ff; /* Light grey background */
 }
 
+.vote-table td input[type="checkbox"] {
+  margin: 0;
+  width: 100%;
+}
+
 .danger-zone {
   margin-top: 40px;
 }
@@ -166,4 +171,17 @@ td.checkbox-field {
 td.checkbox-field input[type="checkbox"] {
   flex: initial;
   margin-left: 0;
+}
+
+input[type="checkbox"] {
+  height: 20px;
+  width: 20px;
+}
+
+button#share-link-copy {
+  padding: 0;
+  background: none;
+  color: black;
+  font-size: 25px;
+  line-height: 16px;
 }

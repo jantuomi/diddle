@@ -5,14 +5,16 @@
 <h2>Managing poll <span class="contrast">{{ poll.title }}</span> by <i>{{ poll.author_name }}</i></h2>
 <p>{{ poll.pub_date_formatted_notz() }}.</p>
 
-<p>
+<div>
   Share this URL with your peers:<br>
-  <a href="{{ poll.share_url() }}">{{ poll.share_url() }}</a>
-</p>
-<p>
+  <a id="share-link" href="{{ poll.share_url() }}">{{ poll.share_url() }}</a> <div id="share-link-copy"></div>
+</div>
+<p></p>
+<div>
   <strong>Note!</strong> You can only edit this poll if you have this URL or use the same browser session:<br>
-  <a href="{{ poll.manage_url() }}">{{ poll.manage_url() }}</a>
-</p>
+  <a id="manage-link" href="{{ poll.manage_url() }}">{{ poll.manage_url() }}</a>
+</div>
+<p></p>
 
 <form class="poll-form" action="/manage/{{ poll.manage_code }}/update_info" method="post">
   {% include "poll_info_table.html.j2" %}
@@ -124,8 +126,26 @@ const focusNext = query.get('focus_next');
 if (focusNext !== null) {
   const nextInput = document.querySelector(`input[name="start_datetime"]`);
   if (nextInput !== null) {
+    nextInput.scrollIntoView();
     nextInput.focus();
   }
+}
+
+let shareLinkCopy = document.getElementById("share-link-copy");
+if (shareLinkCopy !== null) {
+  shareLinkCopy.outerHTML = "<button id='share-link-copy' onclick='copyShareLink()'>📋</button>";
+  shareLinkCopy = document.getElementById("share-link-copy"); // refresh the reference
+}
+
+function copyShareLink() {
+  const shareLink = document.getElementById("share-link");
+  const linkText = shareLink.getAttribute("href");
+  navigator.clipboard.writeText(linkText);
+  console.log("Copied to clipboard: " + linkText);
+  shareLinkCopy.innerHTML = "✅";
+  setTimeout(() => {
+    shareLinkCopy.innerHTML = "📋";
+  }, 2000);
 }
 </script>
 
