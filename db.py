@@ -39,7 +39,7 @@ class Db:
     for _ in range(self.MAX_RETRIES):
       try:
         return self.conn.cursor()
-      except psycopg2.OperationalError:
+      except psycopg2.Error:
         self.connect()
 
     raise Exception(f"Failed to connect to database after {Db.MAX_RETRIES} retries.")
