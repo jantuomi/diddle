@@ -29,8 +29,8 @@
 <table class="manage-table">
   <thead>
     <tr>
-      <th>Start time</th>
-      <th>End time</th>
+      <th>{% if poll.is_whole_day %}Start date{% else %}Start time{% endif %}</th>
+      <th>{% if poll.is_whole_day %}End date{% else %}End time{% endif %}</th>
       <th></th>
     </tr>
   </thead>

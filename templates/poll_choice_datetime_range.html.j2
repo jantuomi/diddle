@@ -1,11 +1,14 @@
 <span>
-{{ choice.start_datetime.strftime("%a %d.%m") }}
+  {% if now.year != choice.start_datetime.year %}
+  {{ choice.start_datetime.strftime("%a %d.%m.%Y") }}
+  {% else %}
+  {{ choice.start_datetime.strftime("%a %d.%m") }}
+  {% endif %}
 </span>
 <span>
-  {% if now.year != choice.start_datetime.year %}.{{choice.start_datetime.year}}{% endif %}
-</span>
-<span>
-  {% if not poll.is_whole_day %}{{ choice.start_datetime.strftime("%H:%M") }}{% endif %}
+  {% if not poll.is_whole_day %}
+  {{ choice.start_datetime.strftime("%H:%M") }}
+  {% endif %}
 </span>
 {% if (poll.is_whole_day and not choice.ends_on_same_day()) or (not poll.is_whole_day and not choice.ends_at_same_datetime()) %}
 <span>&mdash;</span>
@@ -13,12 +16,16 @@
 
 {% if not choice.ends_on_same_day() %}
 <span>
+  {% if now.year != choice.end_datetime.year %}
+  {{ choice.end_datetime.strftime("%a %d.%m.%Y") }}
+  {% else %}
   {{ choice.end_datetime.strftime("%a %d.%m") }}
-</span>
-<span>
-  {% if now.year != choice.end_datetime.year %}.{{choice.end_datetime.year}}{% endif %}
+  {% endif %}
 </span>
 {% endif %}
+
 <span>
-  {% if not poll.is_whole_day %}{{ choice.end_datetime.strftime("%H:%M") }}{% endif %}
+  {% if not poll.is_whole_day %}
+  {{ choice.end_datetime.strftime("%H:%M") }}
+  {% endif %}
 </span>
