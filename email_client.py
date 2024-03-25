@@ -69,7 +69,7 @@ else:
 
 def send_participation_email(poll_id: str, voter_name: str):
   poll = db.get_poll(poll_id)
-  if not poll or poll.author_email is None:
+  if not poll or poll.author_email is None or poll.author_email.strip() == "":
     return
 
   print(f"Sending participation email to {poll.author_email}")
@@ -88,7 +88,7 @@ def send_participation_email(poll_id: str, voter_name: str):
 
 def send_poll_created_email(poll_id: str):
   poll = db.get_poll(poll_id)
-  if not poll or poll.author_email is None:
+  if not poll or poll.author_email is None or poll.author_email.strip() == "":
     return
 
   print(f"Sending poll created email to {poll.author_email}")
