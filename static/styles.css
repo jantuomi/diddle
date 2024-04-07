@@ -23,7 +23,7 @@ h1:hover a {
   text-decoration: none;
 }
 
-textarea {
+textarea, input {
   font-family: "Verdana", "Arial", sans-serif;
   font-size: 16px;
 }
