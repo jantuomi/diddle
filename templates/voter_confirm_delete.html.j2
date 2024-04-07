@@ -1,0 +1,12 @@
+{% extends "base.html.j2" %}
+
+{% block content %}
+<h2>Confirm deletion of voter <span class="contrast">{{ voter_name }}</span></h2>
+
+<p>Are you sure you want to delete the submission by {{ voter_name }}?</p>
+
+<form action="/poll/{{ poll_id }}/confirm_delete_voter" method="post">
+  <input type="hidden" name="voter_code" value="{{ voter_code }}">
+  <input class="red" type="submit" value="Yes, delete it">
+</form>
+{% endblock %}

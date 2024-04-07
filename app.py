@@ -226,6 +226,19 @@ def delete_voter(id):
   if not validate_uuid(id):
     return error_page("Invalid poll ID", 400)
 
+  voter_code = request.form["voter_code"]
+  voter_name = db.get_voter_name_by_manage_code(voter_code)
+
+  return render_template("voter_confirm_delete.html.j2",
+                         voter_name=voter_name,
+                         voter_code=voter_code,
+                         poll_id=id)
+
+@app.post("/poll/<id>/confirm_delete_voter")
+def confirm_delete_voter(id):
+  if not validate_uuid(id):
+    return error_page("Invalid poll ID", 400)
+
   voter_manage_code = request.form["voter_code"]
 
   voter_name = db.get_voter_name_by_manage_code(voter_manage_code)
