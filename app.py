@@ -163,11 +163,25 @@ def poll(id):
   voter_names = list(voter_names_set)
   voter_names.sort()
 
+  most_voted_choice_ids: set[str] = set()
+  most_voted_value = 0
+  for choice in poll.choices:
+    n_votes = 0
+    for vote in choice.votes:
+      n_votes += vote.value
+
+    if n_votes > most_voted_value:
+      most_voted_choice_ids = { choice.id }
+      most_voted_value = n_votes
+    elif n_votes == most_voted_value:
+      most_voted_choice_ids.add(choice.id)
+
   resp = make_response(
     render_template("poll.html.j2",
                     poll=poll,
                     selections=selections,
                     choices=poll.choices,
+                    most_voted_choice_ids=most_voted_choice_ids,
                     prefill_voter_name=prefill_voter_name,
                     voter_names=voter_names,
                     managed_voter_names=managed_voter_names,
