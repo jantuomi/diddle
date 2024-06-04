@@ -194,3 +194,7 @@ input[type="submit"].delete-voter-btn {
   background: none;
   padding: 0;
 }
+
+.most-voted {
+  background-color: #ffcd0455 !important;
+}

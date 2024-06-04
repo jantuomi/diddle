@@ -2,9 +2,10 @@
   <tr>
     <th></th>
     {% for choice in choices %}
-    <th>
+    <th {% if choice.id in most_voted_choice_ids %}class="most-voted"{% endif %}>
       {% include "poll_choice_datetime_range.html.j2" %}
       <span>
+        {% if choice.id in most_voted_choice_ids %}👑{% endif %}
         <i>{{ choice.votes_with_value(1) | length }} votes</i>
       </span>
     </th>

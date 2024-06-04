@@ -1,13 +1,14 @@
 <form action="/poll/{{ poll.id }}/vote" method="post">
   <div class="vote-list">
     {% for choice in choices %}
-    <div>
+    <div {% if choice.id in most_voted_choice_ids %}class="most-voted"{% endif %}>
       <label for="choice_{{ choice.id }}">
         <input type="checkbox" name="choice_{{ choice.id }}" id="choice_{{ choice.id }}">
         <strong>
           {% include "poll_choice_datetime_range.html.j2" %}
         </strong>
         <span>
+          {% if choice.id in most_voted_choice_ids %}👑{% endif %}
           <i>{{ choice.votes_with_value(1) | length }}&nbsp;votes</i>
         </span>
         <div>
