@@ -1,63 +1,68 @@
+<div class="vote-table-container">
 <table class="vote-table">
-  <tr>
-    <th></th>
-    {% for choice in choices %}
-    <th {% if choice.id in most_voted_choice_ids %}class="most-voted"{% endif %}>
-      {% include "poll_choice_datetime_range.html.j2" %}
-      <span>
-        {% if choice.id in most_voted_choice_ids %}👑{% endif %}
-        <i>{{ choice.votes_with_value(1) | length }} votes</i>
-      </span>
-    </th>
-    {% endfor %}
-  </tr>
-  {% for voter_name in voter_names %}
-  <tr>
-    <td>
-      {% if voter_name in managed_voter_names %}
-      <form action="/poll/{{ poll.id }}/delete_voter" method="post">
-        <input type="hidden" name="voter_code" value="{{ managed_voter_names[voter_name] }}">
+  <thead>
+    <tr>
+      <th></th>
+      {% for choice in choices %}
+      <th {% if choice.id in most_voted_choice_ids %}class="most-voted"{% endif %}>
+        {% include "poll_choice_datetime_range.html.j2" %}
+        <span>
+          {% if choice.id in most_voted_choice_ids %}👑{% endif %}
+          <i>{{ choice.votes_with_value(1) | length }} votes</i>
+        </span>
+      </th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for voter_name in voter_names %}
+    <tr>
+      <td>
+        {% if voter_name in managed_voter_names %}
+        <form action="/poll/{{ poll.id }}/delete_voter" method="post">
+          <input type="hidden" name="voter_code" value="{{ managed_voter_names[voter_name] }}">
+          {{ voter_name }}
+          <input class="delete-voter-btn" type="submit" value="❌">
+        </form>
+        {% else %}
         {{ voter_name }}
-        <input class="delete-voter-btn" type="submit" value="❌">
-      </form>
+        {% endif %}
+      </td>
+      {% for choice in choices %}
+      {% if selections[(voter_name, choice.id)] == 1 %}
+      <td>
+        <input type="checkbox" checked disabled>
+      </td>
+      {% elif selections[(voter_name, choice.id)] == 0 %}
+      <td>
+        <input type="checkbox" disabled>
+      </td>
       {% else %}
-      {{ voter_name }}
+      <td>
+        ??
+      </td>
       {% endif %}
-    </td>
-    {% for choice in choices %}
-    {% if selections[(voter_name, choice.id)] == 1 %}
-    <td>
-      <input type="checkbox" checked disabled>
-    </td>
-    {% elif selections[(voter_name, choice.id)] == 0 %}
-    <td>
-      <input type="checkbox" disabled>
-    </td>
-    {% else %}
-    <td>
-      ??
-    </td>
-    {% endif %}
+      {% endfor %}
+    </tr>
     {% endfor %}
-  </tr>
-  {% endfor %}
 
-  <!-- Add a row for the current user -->
-  <form action="/poll/{{ poll.id }}/vote" method="post">
-  <tr>
-    <td>
-      <label for="voter_name" hidden>Your name</label>
-      <input type="text" name="voter_name" placeholder="Your name" required
-             {% if prefill_voter_name %}value="{{ prefill_voter_name }}"{% endif %}>
-      <input class="green" type="submit" value="Submit">
-    </td>
-    {% for choice in choices %}
-    <td>
-      <input type="checkbox" name="choice_{{ choice.id }}">
-    </td>
-    {% endfor %}
-  </tr>
-  </form>
-  <!-- End of the row for the current user -->
+    <tr>
+      <!-- Add a row for the current user -->
+      <form action="/poll/{{ poll.id }}/vote" method="post">
+      <td>
+        <label for="voter_name" hidden>Your name</label>
+        <input type="text" name="voter_name" placeholder="Your name" required
+               {% if prefill_voter_name %}value="{{ prefill_voter_name }}"{% endif %}>
+        <input class="green" type="submit" value="Submit">
+      </td>
+      {% for choice in choices %}
+      <td>
+        <input type="checkbox" name="choice_{{ choice.id }}">
+      </td>
+      {% endfor %}
+    </form>
+    </tr>
+    <!-- End of the row for the current user -->
+  </tbody>
 </table>
-
+</div>

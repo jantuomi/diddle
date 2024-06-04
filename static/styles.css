@@ -77,8 +77,13 @@ th, td {
   min-width: 100px;
 }
 
-table {
+.vote-table {
   margin-left: -2px;
+  padding-right: calc((100vw - 1000px) / 2);
+}
+
+.vote-table-container {
+  position: relative;
 }
 
 .vote-table th,
@@ -99,22 +104,22 @@ table {
   font-weight: normal;
 }
 
-.vote-table td:first-child {
+.vote-table td:first-of-type {
   text-align: left;
   padding-left: 5px;
+
+  position: sticky;
+  left: 0;
+
+  background-color: white;
 }
 
-.vote-table tr:last-child td:first-child {
-  padding-left: 0;
+.vote-table tr td:nth-of-type(even),
+.vote-table tr th:nth-of-type(even) {
+  background-color: #f2f2f2 !important; /* Light grey background */
 }
 
-.vote-table tr td:nth-child(even),
-.vote-table tr th:nth-child(even) {
-  background-color: #f2f2f2; /* Light grey background */
-}
-
-.vote-table tr:nth-child(even),
-.vote-table tr:nth-child(even) {
+.vote-table tr:nth-of-type(odd) td {
   background-color: #f8f6ff; /* Light grey background */
 }
 
@@ -124,6 +129,7 @@ table {
 
 .vote-table input[name="voter_name"] {
   max-width: 150px;
+  margin-bottom: 4px;
 }
 
 .danger-zone {
@@ -134,19 +140,19 @@ table {
   text-align: left;
 }
 
-.poll-form td:last-child,
-.manage-table td:last-child {
+.poll-form td:last-of-type,
+.manage-table td:last-of-type {
   display: flex;
   flex-flow: row;
   align-items: center;
 }
 
-.poll-form td:last-child > *,
-.manage-table td:last-child > * {
+.poll-form td:last-of-type > *,
+.manage-table td:last-of-type > * {
   flex: 1;
 }
 
-.manage-table td:last-child input[type="submit"] {
+.manage-table td:last-of-type input[type="submit"] {
   max-width: 70px;
 }
 
