@@ -201,6 +201,8 @@ input[type="submit"].delete-voter-btn {
   padding: 0;
 }
 
+/* This is to fix a CSS specificity issue with the .most-voted class */
+.most-voted,
 .vote-table tr th.most-voted {
   background-color: #ffcd0455 !important;
 }
