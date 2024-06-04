@@ -201,6 +201,6 @@ input[type="submit"].delete-voter-btn {
   padding: 0;
 }
 
-.most-voted {
+.vote-table tr th.most-voted {
   background-color: #ffcd0455 !important;
 }
