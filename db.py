@@ -33,7 +33,23 @@ class Db:
       database=os.getenv('DB_DATABASE', 'postgres'),
       port=os.getenv('DB_PORT', '5432'),
       user=os.getenv('DB_USER', 'postgres'),
-      password=os.environ['DB_PASSWORD'])
+      password=os.environ['DB_PASSWORD'],
+
+      keepalives=1,
+      keepalives_idle=30,
+      keepalives_interval=10,
+      keepalives_count=5,
+
+      application_name='diddle',
+      connect_timeout=10,
+      sslmode='prefer',
+      client_encoding='UTF8',
+    )
+
+    # Set the transaction isolation level
+    with self.conn.cursor() as cursor:
+      cursor.execute("SET SESSION CHARACTERISTICS AS TRANSACTION ISOLATION LEVEL READ COMMITTED")
+      self.conn.commit()
 
   def get_cursor(self):
     for _ in range(self.MAX_RETRIES):
