@@ -164,7 +164,7 @@ def poll(id):
   voter_names.sort()
 
   most_voted_choice_ids: set[str] = set()
-  most_voted_value = 0
+  most_voted_value = 1 # start from 1 to avoid marking 0 votes as most voted
   for choice in poll.choices:
     n_votes = 0
     for vote in choice.votes:
