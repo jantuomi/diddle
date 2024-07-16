@@ -54,6 +54,9 @@ class Db:
   def get_cursor(self):
     for _ in range(self.MAX_RETRIES):
       try:
+        if self.conn.closed:
+          self.connect()
+
         return self.conn.cursor()
       except psycopg2.Error:
         self.connect()
