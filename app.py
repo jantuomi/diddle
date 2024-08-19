@@ -325,11 +325,17 @@ def add_choice(code):
 
   start_datetime = form["start_datetime"]
   if len(start_datetime) == 10:
-    start_datetime += "T00:00"
+    start_datetime += " 00:00:00"
+  else:
+    start_datetime = start_datetime.replace("T", " ")
+    start_datetime += ":00"
 
   end_datetime = form["end_datetime"]
   if len(end_datetime) == 10:
-    end_datetime += "T23:59"
+    end_datetime += " 23:59:00"
+  else:
+    end_datetime = end_datetime.replace("T", " ")
+    end_datetime += ":00"
 
   db.add_choice_to_poll(
     code,

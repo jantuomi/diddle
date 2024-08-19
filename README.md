@@ -4,7 +4,7 @@ Minimalist scheduling. A mobile friendly, fast, self-hosted Doodle alternative.
 
 ## Installation
 
-The Diddle app is a traditional Flask web app that uses PostgreSQL for persistence. User settings are stored in HTTP cookies.
+The Diddle app is a traditional Flask web app that uses SQLite for persistence. User settings are stored in HTTP cookies.
 
 Build a container image with `docker compose` (see `compose.yml`):
 
@@ -28,11 +28,7 @@ You can also run the app without containerization:
 | Variable | Description |
 | -------- | ----------- |
 | BASE_URL | E.g. `diddle.my-server.net`, used as a prefix in dynamically generated links **(required)** |
-| DB_PASSWORD | Postgres password **(required)** |
-| DB_HOST | Postgres host (default: db) |
-| DB_PORT | Postgres port (default: 5432) |
-| DB_DATABASE | Postgres database (default: postgres) |
-| DB_USER | Postgres user (default: postgres) |
+| DB_PATH | Path to the SQLite database **(required)** |
 | EMAIL_HOST | SMTP host address |
 | EMAIL_PORT | SMTP port |
 | EMAIL_HOST_USER | SMTP host user |
