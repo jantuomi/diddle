@@ -7,6 +7,11 @@ body {
   padding: 10px;
   max-width: 1000px;
   margin: 0 auto;
+  line-height: 24px;
+}
+
+a:not(:visited) {
+  color: rgb(30, 99, 248);
 }
 
 h1 {
@@ -37,7 +42,7 @@ input[type="submit"] {
   box-shadow: none;
   padding: 5px 8px;
   border: 0;
-  background-color: rgb(63, 122, 248);
+  background-color: rgb(30, 99, 248);
   color: white;
 }
 
@@ -46,9 +51,9 @@ input[type="submit"].red {
   background-color: #d42f2f;
 }
 
-button.green,
-input[type="submit"].green {
-  background-color: #4caf50;
+button.blue,
+input[type="submit"].blue {
+  background-color: rgb(30, 99, 248);;
 }
 
 button.yellow,
@@ -68,7 +73,7 @@ input[type*="date"]:disabled {
 }
 
 .contrast {
-  color: #fa8e35;
+  color: rgb(30, 99, 248);
 }
 
 th, td {
@@ -191,8 +196,8 @@ button#share-link-copy {
   padding: 0;
   background: none;
   color: black;
-  font-size: 25px;
-  line-height: 16px;
+  font-size: 24px;
+  line-height: 24px;
 }
 
 input[type="submit"].delete-voter-btn {

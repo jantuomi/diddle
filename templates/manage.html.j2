@@ -40,6 +40,7 @@
       <tr>
         <td>
           <input type="{% if poll.is_whole_day %}date{% else %}datetime-local{% endif %}"
+                 aria-label="{% if poll.is_whole_day %}Start date{% else %}Start datetime{% endif %}"
                  name="start_datetime_{{ choice.id }}"
                  value="{% if poll.is_whole_day %}{{ choice.start_date_notz() }}{% else %}{{ choice.start_datetime_notz() }}{% endif %}"
                  disabled
@@ -47,6 +48,7 @@
         </td>
         <td>
           <input type="{% if poll.is_whole_day %}date{% else %}datetime-local{% endif %}"
+                 aria-label="{% if poll.is_whole_day %}End date{% else %}End datetime{% endif %}"
                  name="end_datetime_{{ choice.id }}"
                  value="{% if poll.is_whole_day %}{{ choice.end_date_notz() }}{% else %}{{ choice.end_datetime_notz() }}{% endif %}"
                  disabled
@@ -61,13 +63,19 @@
     <form action="/manage/{{ poll.manage_code }}/add_choice" method="post">
       <tr>
         <td>
-          <input type="{% if poll.is_whole_day %}date{% else %}datetime-local{% endif %}" name="start_datetime" required>
+          <input type="{% if poll.is_whole_day %}date{% else %}datetime-local{% endif %}"
+                 aria-label="{% if poll.is_whole_day %}Start date{% else %}Start datetime{% endif %}"
+                 name="start_datetime"
+                 required>
         </td>
         <td>
-          <input type="{% if poll.is_whole_day %}date{% else %}datetime-local{% endif %}" name="end_datetime" required>
+          <input type="{% if poll.is_whole_day %}date{% else %}datetime-local{% endif %}"
+                 aria-label="{% if poll.is_whole_day %}End date{% else %}End datetime{% endif %}"
+                 name="end_datetime"
+                 required>
         </td>
         <td>
-          <input class="green" type="submit" value="Add">
+          <input class="blue" type="submit" value="Add">
         </td>
       </tr>
     </form>
@@ -133,7 +141,7 @@ if (focusNext !== null) {
 
 let shareLinkCopy = document.getElementById("share-link-copy");
 if (shareLinkCopy !== null) {
-  shareLinkCopy.outerHTML = "<button id='share-link-copy' onclick='copyShareLink()'>📋</button>";
+  shareLinkCopy.outerHTML = "<button id='share-link-copy' aria-label='Copy share link' onclick='copyShareLink()'>📋</button>";
   shareLinkCopy = document.getElementById("share-link-copy"); // refresh the reference
 }
 
