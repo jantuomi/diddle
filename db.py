@@ -7,6 +7,7 @@ import uuid
 
 BASE_URL = os.environ.get("BASE_URL", "http://localhost")
 DB_PATH = os.environ.get("DB_PATH", "db.sqlite3")
+DB_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 class DbContextManager:
     def __init__(self, db: "Db"):
@@ -38,7 +39,8 @@ class Db:
     def connect(self):
         conn = sqlite3.connect(
             DB_PATH,
-            detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES
+            detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
+            isolation_level="IMMEDIATE",
         )
         conn.row_factory = sqlite3.Row
         return conn
@@ -114,7 +116,7 @@ def tuple_to_poll(poll_t: Tuple) -> Poll:
         id=poll_t[0],
         title=poll_t[1],
         description=poll_t[2],
-        pub_date=poll_t[3],
+        pub_date=datetime.datetime.strptime(poll_t[3], DB_DATE_FORMAT),
         author_name=poll_t[4],
         author_email=poll_t[5],
         manage_code=poll_t[6],
@@ -126,8 +128,8 @@ def tuple_to_choice(choice_t: Tuple) -> Choice:
     return Choice(
         id=choice_t[0],
         poll_id=choice_t[1],
-        start_datetime=choice_t[2],
-        end_datetime=choice_t[3],
+        start_datetime=datetime.datetime.strptime(choice_t[2], DB_DATE_FORMAT),
+        end_datetime=datetime.datetime.strptime(choice_t[3], DB_DATE_FORMAT),
         votes=[]
     )
 

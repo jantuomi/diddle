@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS polls (
                                  lower(hex(randomblob(6)))),
     title TEXT NOT NULL,
     description TEXT,
-    pub_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    pub_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     author_name TEXT NOT NULL,
     author_email TEXT,
     manage_code TEXT DEFAULT (lower(hex(randomblob(4))) || '-' ||
@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS polls (
                               substr('4' || substr(lower(hex(randomblob(2))), 2, 3), 1, 4) || '-' ||
                               substr(hex((random() & 0x3fff) | 0x8000), 1, 4) || '-' ||
                               lower(hex(randomblob(6)))),
-    whole_day BOOLEAN NOT NULL
-);
+    whole_day INTEGER NOT NULL
+) STRICT;
 
 CREATE TABLE IF NOT EXISTS choices (
     id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(4))) || '-' ||
@@ -31,10 +31,10 @@ CREATE TABLE IF NOT EXISTS choices (
                                  substr(hex((random() & 0x3fff) | 0x8000), 1, 4) || '-' ||
                                  lower(hex(randomblob(6)))),
     poll_id TEXT NOT NULL,
-    start_datetime TIMESTAMP NOT NULL,
-    end_datetime TIMESTAMP NOT NULL,
+    start_datetime TEXT NOT NULL,
+    end_datetime TEXT NOT NULL,
     FOREIGN KEY (poll_id) REFERENCES polls (id) ON DELETE CASCADE
-);
+) STRICT;
 
 CREATE TABLE IF NOT EXISTS votes (
     id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(4))) || '-' ||
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS votes (
     UNIQUE (poll_id, choice_id, voter_name),
     FOREIGN KEY (choice_id) REFERENCES choices (id) ON DELETE CASCADE,
     FOREIGN KEY (poll_id) REFERENCES polls (id) ON DELETE CASCADE
-);
+) STRICT;
 
 CREATE INDEX IF NOT EXISTS idx_votes_poll_id_voter_name ON votes (poll_id, voter_name);
 CREATE INDEX IF NOT EXISTS idx_choices_poll_id_start_datetime ON choices (poll_id, start_datetime);
