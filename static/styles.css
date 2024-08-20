@@ -10,7 +10,7 @@ body {
   line-height: 24px;
 }
 
-a:not(:visited) {
+a {
   color: rgb(30, 99, 248);
 }
 
@@ -53,7 +53,7 @@ input[type="submit"].red {
 
 button.blue,
 input[type="submit"].blue {
-  background-color: rgb(30, 99, 248);;
+  background-color: rgb(30, 99, 248);
 }
 
 button.yellow,
@@ -166,7 +166,10 @@ th, td {
 }
 
 .display-mode-section input[type="submit"] {
-  margin-left: 10px;
+  text-decoration: underline;
+  color: rgb(30, 99, 248);
+  background: none;
+  padding: 5px 0;
 }
 
 .vote-list label,
@@ -200,10 +203,21 @@ button#share-link-copy {
   line-height: 24px;
 }
 
+.delete-voter-container {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.delete-voter-container span {
+  margin-bottom: 4px;
+}
+
 input[type="submit"].delete-voter-btn {
   margin-left: 5px;
   background: none;
-  padding: 0;
+  padding: 2px 4px;
 }
 
 /* This is to fix a CSS specificity issue with the .most-voted class */

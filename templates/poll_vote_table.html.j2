@@ -19,10 +19,15 @@
     <tr>
       <td>
         {% if voter_name in managed_voter_names %}
-        <form action="/poll/{{ poll.id }}/delete_voter" method="post">
+        <form class="delete-voter-container"
+              action="/poll/{{ poll.id }}/delete_voter"
+              method="post">
           <input type="hidden" name="voter_code" value="{{ managed_voter_names[voter_name] }}">
-          {{ voter_name }}
-          <input class="delete-voter-btn" type="submit" value="❌">
+          <span>{{ voter_name }}</span>
+          <input aria-label="Delete voter {{ voter_name }}"
+                 class="delete-voter-btn"
+                 type="submit"
+                 value="❌">
         </form>
         {% else %}
         {{ voter_name }}

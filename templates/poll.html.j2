@@ -15,8 +15,8 @@
   <form action="/options/toggle_display_mode" method="post">
     <input type="hidden" name="poll_id" value="{{ poll.id }}">
     <label>
-      Display mode: <strong>{{ display_mode }}</strong>
-      <input type="submit" value="Toggle">
+      Display mode:
+      <input type="submit" value="{{ display_mode }}">
     </label>
   </form>
 </div>
