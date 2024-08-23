@@ -4,11 +4,11 @@
 
 <h2><span class="contrast">{{ poll.title }}</span> by <i>{{ poll.author_name }}</i></h2>
 {% if poll.description %}
-  <p>{{ poll.description }}</p>
+  <pre class="poll-description">{{ poll.description }}</pre>
 {% endif %}
 
 {% if poll.choices | length  == 0 %}
-<p>No options available.</p>
+<p style="margin-top: 20px;">No options available.</p>
 {% else %}
 
 <div class="display-mode-section">
