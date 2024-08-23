@@ -1,5 +1,27 @@
+:root {
+  --blue: rgb(30, 99, 248);
+  --red: #d42f2f;
+  --yellow: #ff9800;
+  --black: rgb(0, 0, 0);
+  --white: rgb(255, 255, 255);
+  --gray: #666;
+  --light-gray-1: #f2f2f2;
+  --light-gray-2: #f8f6ff;
+  --gold-trans: #ffcd0455;
+
+  --font-family: "Inclusive Sans", sans-serif;
+}
+
+@font-face {
+  font-family: "Inclusive Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/static/InclusiveSans-Regular.ttf) format('woff2');
+}
+
 html {
-  font-family: "Verdana", "Arial", sans-serif !important;
+  font-family: var(--font-family) !important;
   font-size: 16px;
 }
 
@@ -10,8 +32,8 @@ body {
   line-height: 24px;
 }
 
-a {
-  color: rgb(30, 99, 248);
+a, .contrast {
+  color: var(--blue);
 }
 
 h1 {
@@ -19,17 +41,17 @@ h1 {
 }
 
 h1 a {
-  color: black;
+  color: var(--black);
   text-decoration: none;
 }
 
 h1:hover a {
-  border-bottom: 2px dotted #fa8e35;
+  border-bottom: 2px dotted var(--blue);
   text-decoration: none;
 }
 
 textarea, input {
-  font-family: "Verdana", "Arial", sans-serif;
+  font-family: var(--font-family);
   font-size: 16px;
 }
 
@@ -42,38 +64,34 @@ input[type="submit"] {
   box-shadow: none;
   padding: 5px 8px;
   border: 0;
-  background-color: rgb(30, 99, 248);
-  color: white;
+  background-color: var(--blue);
+  color: var(--white);
 }
 
 button.red,
 input[type="submit"].red {
-  background-color: #d42f2f;
+  background-color: var(--red);
 }
 
 button.blue,
 input[type="submit"].blue {
-  background-color: rgb(30, 99, 248);
+  background-color: var(--blue);
 }
 
 button.yellow,
 input[type="submit"].yellow {
-  background-color: #ff9800;
+  background-color: var(--yellow);
 }
 
 input[type="text"],
 input[type*="date"] {
   font-size: 16px;
-  color: black;
+  color: var(--black);
 }
 
 input[type="text"]:disabled,
 input[type*="date"]:disabled {
-  color: #666;
-}
-
-.contrast {
-  color: rgb(30, 99, 248);
+  color: var(--gray);
 }
 
 th, td {
@@ -121,11 +139,11 @@ th, td {
 
 .vote-table tr td:nth-of-type(even),
 .vote-table tr th:nth-of-type(even) {
-  background-color: #f2f2f2 !important; /* Light grey background */
+  background-color: var(--light-gray-1) !important;
 }
 
 .vote-table tr:nth-of-type(odd) td {
-  background-color: #f8f6ff; /* Light grey background */
+  background-color: var(--light-gray-2);
 }
 
 .vote-table td input[type="checkbox"] {
@@ -143,6 +161,12 @@ th, td {
 
 .manage-table th {
   text-align: left;
+}
+
+.poll-description {
+  font-family: var(--font-family) !important;
+  white-space: break-spaces;
+  overflow-x: hidden;
 }
 
 .poll-form td:last-of-type,
@@ -167,9 +191,11 @@ th, td {
 
 .display-mode-section input[type="submit"] {
   text-decoration: underline;
-  color: rgb(30, 99, 248);
+  color: var(--blue);
   background: none;
   padding: 5px 0;
+  min-width: 25px;
+  text-align: center;
 }
 
 .vote-list label,
@@ -198,7 +224,7 @@ input[type="checkbox"] {
 button#share-link-copy {
   padding: 0;
   background: none;
-  color: black;
+  color: var(--black);
   font-size: 24px;
   line-height: 24px;
 }
@@ -223,5 +249,5 @@ input[type="submit"].delete-voter-btn {
 /* This is to fix a CSS specificity issue with the .most-voted class */
 .most-voted,
 .vote-table tr th.most-voted {
-  background-color: #ffcd0455 !important;
+  background-color: var(--gold-trans) !important;
 }
