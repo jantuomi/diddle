@@ -1,5 +1,15 @@
 {% extends "base.html.j2" %}
 
+{% block head_meta %}
+<title>Manage &quot;{{ poll.title }}&quot; - diddle 👉👈</title>
+<meta name="description" content="{{ poll.description }}">
+<meta property="og:title" content="Manage &quot;{{ poll.title }}&quot;">
+<meta property="og:description" content="Manage diddle 👉👈 poll">
+<meta property="og:url" content="{{ poll.manage_url() }}">
+<meta property="og:site_name" content="diddle">
+<meta property="og:type" content="website">
+{% endblock %}
+
 {% block content %}
 
 <h2>Managing <span class="contrast">{{ poll.title }}</span> by <i>{{ poll.author_name }}</i></h2>
