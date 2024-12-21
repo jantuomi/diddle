@@ -1,12 +1,14 @@
 #!/bin/bash
 
+# Use e.g. `direnv` to set the DIDDLE_ variables
+
 set -euxo pipefail
 
-IMAGE=registry.jan.systems/diddle:latest
+IMAGE=${DIDDLE_OCI_REGISTRY}/diddle:latest
 
 # Build
 docker build --progress plain --platform linux/amd64 -t "$IMAGE" .
 docker push "$IMAGE"
 
 # Deploy
-ssh jan.systems 'cd deployments/diddle && bash dc-restart.sh'
+ssh "${DIDDLE_SSH_SERVER}" "${DIDDLE_UPDATE_COMMAND}"
