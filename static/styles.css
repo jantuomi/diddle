@@ -1,253 +1,279 @@
 :root {
-  --blue: rgb(30, 99, 248);
-  --red: #d42f2f;
-  --yellow: #ff9800;
-  --black: rgb(0, 0, 0);
-  --white: rgb(255, 255, 255);
-  --gray: #666;
-  --light-gray-1: #f2f2f2;
-  --light-gray-2: #f8f6ff;
-  --gold-trans: #ffcd0455;
+    --blue: rgb(30, 99, 248);
+    --red: #d42f2f;
+    --yellow: #ff9800;
+    --black: rgb(0, 0, 0);
+    --white: rgb(255, 255, 255);
+    --gray: #666;
+    --light-gray-1: #f2f2f2;
+    --light-gray-2: #f8f6ff;
+    --gold-trans: #ffcd0455;
 
-  --font-family: "Inclusive Sans", sans-serif;
+    --font-family: "Inclusive Sans", sans-serif;
 }
 
 @font-face {
-  font-family: "Inclusive Sans";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url(/static/InclusiveSans-Regular.ttf) format('woff2');
+    font-family: "Inclusive Sans";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/static/InclusiveSans-Regular.ttf) format("woff2");
 }
 
 html {
-  font-family: var(--font-family) !important;
-  font-size: 16px;
+    font-family: var(--font-family) !important;
+    font-size: 16px;
 }
 
 body {
-  padding: 10px;
-  max-width: 1000px;
-  margin: 0 auto;
-  line-height: 24px;
+    padding: 10px;
+    max-width: 1000px;
+    margin: 0 auto;
+    line-height: 24px;
 }
 
-a, .contrast {
-  color: var(--blue);
+a,
+.contrast {
+    color: var(--blue);
 }
 
 h1 {
-  margin-bottom: 40px;
+    margin-bottom: 40px;
 }
 
 h1 a {
-  color: var(--black);
-  text-decoration: none;
+    color: var(--black);
+    text-decoration: none;
 }
 
 h1:hover a {
-  border-bottom: 2px dotted var(--blue);
-  text-decoration: none;
+    border-bottom: 2px dotted var(--blue);
+    text-decoration: none;
 }
 
-textarea, input {
-  font-family: var(--font-family);
-  font-size: 16px;
+textarea,
+input {
+    font-family: var(--font-family);
+    font-size: 16px;
 }
 
 button,
 input[type="submit"] {
-  cursor: pointer;
-  font-size: 16px;
-  border-radius: 4px;
-  text-shadow: none;
-  box-shadow: none;
-  padding: 5px 8px;
-  border: 0;
-  background-color: var(--blue);
-  color: var(--white);
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 4px;
+    text-shadow: none;
+    box-shadow: none;
+    padding: 5px 8px;
+    border: 0;
+    background-color: var(--blue);
+    color: var(--white);
 }
 
 button.red,
 input[type="submit"].red {
-  background-color: var(--red);
+    background-color: var(--red);
 }
 
 button.blue,
 input[type="submit"].blue {
-  background-color: var(--blue);
+    background-color: var(--blue);
 }
 
 button.yellow,
 input[type="submit"].yellow {
-  background-color: var(--yellow);
+    background-color: var(--yellow);
 }
 
 input[type="text"],
 input[type*="date"] {
-  font-size: 16px;
-  color: var(--black);
+    font-size: 16px;
+    color: var(--black);
 }
 
 input[type="text"]:disabled,
 input[type*="date"]:disabled {
-  color: var(--gray);
+    color: var(--gray);
 }
 
-th, td {
-  padding-left: 0;
-  padding-right: 5px;
-  min-width: 100px;
+th,
+td {
+    padding-left: 0;
+    padding-right: 5px;
+    min-width: 100px;
 }
 
 .vote-table {
-  margin-left: -2px;
-  padding-right: calc((100vw - 1000px) / 2);
+    margin-left: -2px;
+    padding-right: calc((100vw - 1000px) / 2);
 }
 
 .vote-table-container {
-  position: relative;
+    position: relative;
 }
 
 .vote-table th,
 .vote-table td {
-  text-align: center;
-  padding: 7px 5px;
+    text-align: center;
+    padding: 7px 5px;
 }
 
 .vote-table th {
-  vertical-align: bottom;
+    vertical-align: bottom;
 }
 
 .vote-table th span {
-  display: block;
+    display: block;
 }
 
 .vote-table th span i {
-  font-weight: normal;
+    font-weight: normal;
 }
 
 .vote-table td:first-of-type {
-  text-align: left;
-  padding-left: 5px;
+    text-align: left;
+    padding-left: 5px;
 
-  position: sticky;
-  left: 0;
+    position: sticky;
+    left: 0;
 
-  background-color: white;
+    background-color: white;
 }
 
 .vote-table tr td:nth-of-type(even),
 .vote-table tr th:nth-of-type(even) {
-  background-color: var(--light-gray-1) !important;
+    background-color: var(--light-gray-1) !important;
 }
 
 .vote-table tr:nth-of-type(odd) td {
-  background-color: var(--light-gray-2);
+    background-color: var(--light-gray-2);
 }
 
 .vote-table td input[type="checkbox"] {
-  margin: 0;
+    margin: 0;
 }
 
 .vote-table input[name="voter_name"] {
-  max-width: 150px;
-  margin-bottom: 4px;
+    max-width: 150px;
+    margin-bottom: 4px;
 }
 
 .danger-zone {
-  margin-top: 40px;
+    margin-top: 40px;
 }
 
 .manage-table th {
-  text-align: left;
+    text-align: left;
 }
 
 .poll-description {
-  font-family: var(--font-family) !important;
-  white-space: break-spaces;
-  overflow-x: hidden;
+    font-family: var(--font-family) !important;
+    white-space: break-spaces;
+    overflow-x: hidden;
 }
 
 .poll-form td:last-of-type,
 .manage-table td:last-of-type {
-  display: flex;
-  flex-flow: row;
-  align-items: center;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
 }
 
 .poll-form td:last-of-type > *,
 .manage-table td:last-of-type > * {
-  flex: 1;
+    flex: 1;
 }
 
 .manage-table td:last-of-type input[type="submit"] {
-  max-width: 70px;
+    max-width: 70px;
+}
+
+@media (max-width: 499px) {
+    .manage-table .button-wrapper-desktop {
+        display: none !important;
+    }
+
+    .manage-table .button-wrapper-mobile {
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+    }
+
+    /* Hack to force the datetime inputs to fit on an iPhone 13 screen */
+    input[type="datetime-local"] {
+        font-size: 95%;
+    }
+}
+
+@media (min-width: 500px) {
+    .manage-table .button-wrapper-mobile {
+        display: none;
+    }
 }
 
 .display-mode-section {
-  margin-bottom: 30px;
+    margin-bottom: 30px;
 }
 
 .display-mode-section input[type="submit"] {
-  text-decoration: underline;
-  color: var(--blue);
-  background: none;
-  padding: 5px 0;
-  min-width: 25px;
-  text-align: center;
+    text-decoration: underline;
+    color: var(--blue);
+    background: none;
+    padding: 5px 0;
+    min-width: 25px;
+    text-align: center;
 }
 
 .vote-list label,
 input[type="checkbox"] {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 input[type="checkbox"]:disabled {
-  cursor: initial;
+    cursor: initial;
 }
 
 td.checkbox-field {
-  text-align: left;
+    text-align: left;
 }
 
 td.checkbox-field input[type="checkbox"] {
-  flex: initial;
-  margin-left: 0;
+    flex: initial;
+    margin-left: 0;
 }
 
 input[type="checkbox"] {
-  height: 20px;
-  width: 20px;
+    height: 20px;
+    width: 20px;
 }
 
 button#share-link-copy {
-  padding: 0;
-  background: none;
-  color: var(--black);
-  font-size: 24px;
-  line-height: 24px;
+    padding: 0;
+    background: none;
+    color: var(--black);
+    font-size: 24px;
+    line-height: 24px;
 }
 
 .delete-voter-container {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  align-items: center;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .delete-voter-container span {
-  margin-bottom: 4px;
+    margin-bottom: 4px;
 }
 
 input[type="submit"].delete-voter-btn {
-  margin-left: 5px;
-  background: none;
-  padding: 2px 4px;
+    margin-left: 5px;
+    background: none;
+    padding: 2px 4px;
 }
 
 /* This is to fix a CSS specificity issue with the .most-voted class */
 .most-voted,
 .vote-table tr th.most-voted {
-  background-color: var(--gold-trans) !important;
+    background-color: var(--gold-trans) !important;
 }

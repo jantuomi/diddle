@@ -64,8 +64,13 @@
                  disabled
                  {% if last_choice_id == choice.id %}id="last-end-datetime"{% endif %}>
         </td>
-        <td>
+        <td class="button-wrapper-desktop">
           <input class="red" type="submit" value="Delete">
+        </td>
+      </tr>
+      <tr colspan="1" class="button-wrapper-mobile">
+        <td>
+            <input class="red" type="submit" value="Delete">
         </td>
       </tr>
     </form>
@@ -84,6 +89,11 @@
                  name="end_datetime"
                  required>
         </td>
+        <td class="button-wrapper-desktop">
+          <input class="blue" type="submit" value="Add">
+        </td>
+      </tr>
+      <tr class="button-wrapper-mobile">
         <td>
           <input class="blue" type="submit" value="Add">
         </td>
