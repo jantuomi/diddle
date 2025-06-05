@@ -44,7 +44,6 @@ def background_thread():
     time.sleep(0.1)
 
 def create_app() -> Flask:
-    print("Running create app!")
     threading.Thread(target=background_thread, daemon=True).start()
     app = Flask(__name__)
     Compress(app)
