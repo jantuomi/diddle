@@ -15,9 +15,6 @@ from dataclasses import dataclass
 from flask import Flask, render_template, redirect, request, make_response
 from flask_compress import Compress
 
-app = Flask(__name__)
-Compress(app)
-
 import db
 import email_client
 
@@ -36,6 +33,26 @@ VOTER_NAME_MAX_LENGTH = 100
 
 Task = Callable[[], None]
 background_tasks_queue: queue.Queue[Task] = queue.Queue()
+
+### Init
+
+def background_thread():
+  print("Background thread started")
+  while True:
+    task = background_tasks_queue.get()
+    task()
+    time.sleep(0.1)
+
+def create_app() -> Flask:
+    print("Running create app!")
+    threading.Thread(target=background_thread, daemon=True).start()
+    app = Flask(__name__)
+    Compress(app)
+    return app
+
+app = create_app()
+
+### Routes
 
 def voter_selection_on_choice(voter_name: str, choice: db.Choice) -> int | None:
   for vote in choice.votes:
@@ -409,14 +426,3 @@ def toggle_display_mode():
   resp.set_cookie("diddle_display_mode", display_mode,
                   samesite="Lax", secure=False)
   return resp
-
-### Background thread
-
-def background_thread():
-  print("Background thread started")
-  while True:
-    task = background_tasks_queue.get()
-    task()
-    time.sleep(0.1)
-
-threading.Thread(target=background_thread, daemon=True).start()
