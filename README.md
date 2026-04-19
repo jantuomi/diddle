@@ -36,8 +36,13 @@ You can also run the app without containerization:
 | EMAIL_USE_TLS | Use STARTTLS with SMTP? |
 | EMAIL_HEADERS | Additional SMTP headers, format: `header1=foo,header2=bar` |
 | EMAIL_MESSAGE_FROM | Email message from address |
+| POLICY_URL | Address of the policy & terms page |
+| POLICY_INSTANCE_DOMAIN | The domain part of the BASE_URL |
+| POLICY_CONTACT_EMAIL | Your contact email |
 
 `EMAIL_` variables are only required if at least one of them is defined.
+
+`POLICY_` variables are used for the Privacy policy & Terms of use page. See relevant section below.
 
 ## Screenshots
 
@@ -62,3 +67,9 @@ You can also run the app without containerization:
 Run Flask in dev mode:
 
     flask --app app --debug run -p 8000
+
+## Privacy policy and Terms of use page
+
+By defining a privacy and terms address in `POLICY_URL`, a link to it is rendered in the front page footer. You may set the value to `/policy` and create a `templates/policy.html.j2` file to serve a policy page as part of the app. The repository contains a sample policy template in `templates/policy_sample.html.j2` that uses the environment variables `POLICY_INSTANCE_DOMAIN` and `POLICY_CONTACT_EMAIL`. You may copy that sample to `templates/policy.html.j2` and make necessary changes to reflect the reality of your hosted environment.
+
+The developers of `diddle` take no responsibility about the content and legality of any policy you display to your users, whether it's based on the sample policy or not.

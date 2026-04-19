@@ -1,0 +1,137 @@
+{% extends "base.html.j2" %}
+
+{% block head_meta %}
+<title>Privacy and terms – {{ instance_domain }} 👉👈</title>
+<meta
+    name="description"
+    content="Privacy policy and terms of use for {{ instance_domain }}"
+/>
+{% endblock %}
+
+{% block content %}
+
+<h2 style="color: red">This is a sample privacy policy and terms of use document. You must replace this with your own when deploying.</h2>
+
+<p>Last updated: 19 April 2026</p>
+
+<hr />
+
+<h2>Terms of use</h2>
+
+<h3>Acceptance of terms</h3>
+<p>
+    By using <i>diddle</i> on <a href="/">{{ instance_domain }}</a>, you agree to these terms. If you do not agree, please do not use the service.
+</p>
+
+<h3>Description of service</h3>
+<p>
+    <i>diddle</i> is a self-hosted scheduling tool that allows users to create polls and vote on time options. The service is provided as-is and free-of-charge.
+</p>
+
+<h3>User responsibilities</h3>
+<p>You agree not to:</p>
+<ul>
+    <li>Use the service for any unlawful purpose.</li>
+    <li>Submit content that is offensive, harmful, or infringes on the rights of others.</li>
+    <li>Attempt to disrupt or compromise the service or its infrastructure.</li>
+</ul>
+
+<h3>Disclaimer of warranties</h3>
+<p>
+    The service is provided "as is" and "as available" without warranties of any
+    kind, whether express or implied. We do not guarantee that the service will
+    be uninterrupted, error-free, or that any data will be retained or preserved.
+</p>
+
+<h3>Limitation of liability</h3>
+<p>
+    To the fullest extent permitted by law, the operator of this diddle instance
+    shall not be liable for any indirect, incidental, or consequential damages
+    arising from your use of the service, including but not limited to loss of data.
+</p>
+
+<h3>Changes to these terms</h3>
+<p>
+    We may update these terms at any time. Continued use of the service after
+    changes constitutes acceptance of the updated terms.
+</p>
+
+<hr />
+
+<h2>Privacy policy</h2>
+
+<h3>What data do we collect?</h3>
+<p>When you use <a href="/">{{ instance_domain }}</a>, we collect the data you provide directly:</p>
+<ul>
+    <li>Poll: title, description, author name, author email address, poll settings.</li>
+    <li>Votes: voter name and selected time choices.</li>
+</ul>
+<p>
+    Additionally, connection information such as your IP address may be stored in server logs for administrative purposes.
+</p>
+<p>
+    We do not collect any other kinds of data.
+</p>
+
+<h3>How do we use your data?</h3>
+<p>
+    Your data is used solely to provide the scheduling functionality of diddle.
+    Your email address maybe used to send you notifications about polls you manage.
+    We do not use your data for any other purpose.
+</p>
+
+<h3>Cookies</h3>
+<p>
+    Diddle uses only strictly necessary functional cookies to remember which
+    polls you have created or voted in, and your display mode preference. These
+    cookies do not track you across websites and are not used for analytics,
+    advertising, or any other purpose.
+</p>
+
+<h3>Data storage and transfers</h3>
+<p>
+    All data is stored within the European Union.
+    Your data is not transferred outside the EU and is not shared with any third parties.
+    Your data is stored encrypted at rest and in flight.
+</p>
+
+<h3>Data retention</h3>
+<p>
+    No specific data retention period is guaranteed.
+    No data durability or backup guarantees are provided.
+    Data may be lost due to technical failures.
+</p>
+
+<h3>Data deletion</h3>
+<p>
+    By using the <i>Delete poll</i> functionality, poll data and any related data is deleted from the database.
+</p>
+<p>
+    By using the <i>Delete voter</i> functionality, voter name and selected time choices are deleted from the database.
+</p>
+
+<h3>Your rights</h3>
+<p>
+    Under the General Data Protection Regulation (GDPR), you have the right to:
+</p>
+<ul>
+    <li>Access the personal data we hold about you.</li>
+    <li>Request correction of inaccurate data.</li>
+    <li>Request erasure of your data.</li>
+    <li>Restrict or object to processing of your data.</li>
+    <li>Request portability of your data.</li>
+</ul>
+<p>
+    To exercise any of these rights, please contact us using the details below.
+    Data is removed from the database upon request. If we are unable to verify
+    your identity, we may not be able to act on your request.
+</p>
+
+<hr />
+
+<h3>Contact</h3>
+<p>
+    Email: {{ contact_email }}
+</p>
+<br />
+{% endblock %}

@@ -1,32 +1,41 @@
-{% extends "base.html.j2" %}
-
-{% block content %}
+{% extends "base.html.j2" %} {% block content %}
 <h2>Create new diddle</h2>
 <form class="poll-form" action="/poll/create" method="post">
-  {% include "poll_info_table.html.j2" %}
+    {% include "poll_info_table.html.j2" %}
 
-  <p>You can add time options as well as modify all settings after submitting.</p>
-  <input class="blue" type="submit" value="Create">
+    <p>
+        You can add time options as well as modify all settings after
+        submitting.
+    </p>
+    <input class="blue" type="submit" value="Create" />
 </form>
 
 {% if created_polls | length != 0 %}
-<br>
+<br />
 <h2>My diddles</h2>
 <ul>
-  {% for poll in created_polls %}
-  <li><a href="/manage/{{ poll.manage_code }}">{{ poll.title }}</a></li>
-  {% endfor %}
+    {% for poll in created_polls %}
+    <li><a href="/manage/{{ poll.manage_code }}">{{ poll.title }}</a></li>
+    {% endfor %}
 </ul>
 {% endif %}
 
-<br>
-<br>
+<br />
+<br />
 <h2>About diddle</h2>
-<p><i>diddle</i> is a minimalist, mobile friendly, fast and self-hosted scheduling tool,
-    licensed under <a href="https://github.com/jantuomi/diddle/blob/main/LICENSE">Apache 2.0.</a>
+<p>
+    <i>diddle</i> is a minimalist, mobile friendly, fast and self-hosted scheduling tool, licensed under
+    <a href="https://github.com/jantuomi/diddle/blob/main/LICENSE">Apache 2.0.</a><br />
+    Find <i>diddle</i> on <a href="https://github.com/jantuomi/diddle">GitHub</a>.<br />
+    This site uses the <a href="https://fonts.google.com/specimen/Inclusive+Sans">Inclusive Sans</a> typeface.
 </p>
 <p>
-  Find <i>diddle</i> on <a href="https://github.com/jantuomi/diddle">GitHub</a>. © {{ now.year }} Jan Tuomi. All rights reserved.<br>
-  This site uses the <a href="https://fonts.google.com/specimen/Inclusive+Sans">Inclusive Sans</a> typeface.
+    © {{ now.year }} Jan Tuomi. All rights reserved.
+    {% if has_policy %}
+    <a href="/policy">Privacy and terms</a>.
+    {% endif %}
+    {% if app_version %}
+    <br />Version: <span style="font-family: monospace">{{ app_version }}</span>.
+    {% endif %}
 </p>
 {% endblock %}
